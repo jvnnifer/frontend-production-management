@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class ApiService {
-  final String baseUrl = "http://192.168.100.6:8080/api";
+  final String baseUrl = "http://192.168.0.101:8080/api";
 
   Future<Map<String, dynamic>?> login(String username, String password) async {
     final response = await http.post(
@@ -318,6 +318,18 @@ class ApiService {
     }
   }
 
+  Future<List<Map<String, dynamic>>> loadPreparationOrders() async {
+    final response =
+        await http.get(Uri.parse("$baseUrl/get-preparation-order"));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.cast<Map<String, dynamic>>();
+    } else {
+      throw Exception("Failed to load preparation order: ${response.body}");
+    }
+  }
+
   Future<Map<String, dynamic>> loadOrderById(String orderNo) async {
     final response = await http.get(Uri.parse(
         "$baseUrl/get-order-by-id?orderNo=${Uri.encodeQueryComponent(orderNo)}"));
@@ -327,6 +339,27 @@ class ApiService {
       return data;
     } else {
       throw Exception("Failed to load order: ${response.body}");
+    }
+  }
+
+  //  ================== PREPARATION ORDER ==========================
+  Future<Map<String, dynamic>> insertPreparationOrder(String note,
+      String status, String approvalPIC, String productionPIC) async {
+    final response = await http.post(
+      Uri.parse("$baseUrl/preparation-order"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        'note': note,
+        'status': status,
+        'approvalPIC': approvalPIC,
+        'productionPIC': productionPIC,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception("Failed to insert preparation order: ${response.body}");
     }
   }
 }

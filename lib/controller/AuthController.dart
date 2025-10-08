@@ -6,6 +6,7 @@ import 'package:jago_app/pages/HomePage.dart';
 import 'package:jago_app/pages/Login.dart';
 import 'package:jago_app/pages/admin/CatalogShoes.dart';
 import 'package:jago_app/pages/admin/Order.dart';
+import 'package:jago_app/pages/warehouse/PreparationOrder.dart';
 import 'package:jago_app/pages/warehouse/RawMaterials.dart';
 import 'dart:io';
 import 'dart:convert';
@@ -121,6 +122,15 @@ class AuthController extends GetxController {
       orders.value = result;
     } catch (e) {
       print("Error loadOrders: $e");
+    }
+  }
+
+  Future<void> loadPreparationOrders() async {
+    try {
+      final result = await apiService.loadPreparationOrders();
+      orders.value = result;
+    } catch (e) {
+      print("Error load Preparation Order: $e");
     }
   }
 
@@ -257,6 +267,7 @@ class AuthController extends GetxController {
     }
   }
 
+  // ================== MATERIAL ===================
   Future<void> createMaterial() async {
     isLoading.value = true;
     try {
@@ -586,6 +597,52 @@ class AuthController extends GetxController {
       Get.snackbar(
         "Error",
         "Failed to create order",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
+        duration: Duration(seconds: 2),
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // ==================== PREPARATION ORDER =====================
+  Future<void> createPreparationOrder() async {
+    isLoading.value = true;
+    try {
+      final result = await apiService.insertPreparationOrder(
+        note.value,
+        status.value,
+        approvalPIC.value,
+        productionPIC.value,
+      );
+
+      print("Preparation Order created: $result");
+
+      Get.snackbar(
+        "Success",
+        "Preparation Order created successfully",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
+        duration: Duration(seconds: 1),
+      );
+
+      notesPrep.value = '';
+      status.value = '';
+      approvalPIC.value = '';
+      productionPIC.value = '';
+
+      await loadPreparationOrders();
+
+      await Future.delayed(Duration(seconds: 1));
+      Get.off(() => PreparationOrder());
+    } catch (e) {
+      print("Error create preparation order: $e");
+      Get.snackbar(
+        "Error",
+        "Failed to create Preparation Order",
         backgroundColor: Colors.red,
         colorText: Colors.white,
         snackPosition: SnackPosition.TOP,
