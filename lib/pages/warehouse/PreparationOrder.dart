@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:jago_app/components/CollapsibleSidebar.dart';
+import 'package:jago_app/controller/AuthController.dart';
 import 'package:jago_app/controller/SidebarController.dart';
 
 class PreparationOrder extends StatelessWidget {
@@ -9,6 +10,9 @@ class PreparationOrder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final SidebarController sidebar = Get.find();
+    final controller = Get.find<AuthController>();
+
+    controller.loadPreparationOrders();
     return Scaffold(
       body: Stack(
         children: [
@@ -43,7 +47,11 @@ class PreparationOrder extends StatelessWidget {
                       ),
                     )),
                 Container(
-                  padding: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                  padding: EdgeInsets.only(
+                    left: 20,
+                    right: 20,
+                    bottom: 10,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -63,92 +71,161 @@ class PreparationOrder extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 8,
-                              offset: const Offset(0, 4),
+                      SizedBox(height: 10),
+                      // LIST CARD
+                      Obx(() {
+                        final prepOrders = controller.prepOrders;
+
+                        if (prepOrders.isEmpty) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 50),
+                              child: Text(
+                                "Belum ada Preparation Order",
+                                style: TextStyle(color: Colors.grey),
+                              ),
                             ),
-                          ],
-                          border: Border.all(
-                            color: Colors.grey.shade200,
-                            width: 1,
-                          ),
-                        ),
-                        padding: const EdgeInsets.all(16),
-                        margin: const EdgeInsets.symmetric(vertical: 8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Judul Order",
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 18,
+                          );
+                        }
+
+                        return Column(
+                          children: prepOrders.map((order) {
+                            final color = order["status"] == "Waiting Material"
+                                ? Colors.orange[100]
+                                : order["status"] == "Ready to Process"
+                                    ? Colors.green[100]
+                                    : Colors.blue[100];
+
+                            final textColor =
+                                order["status"] == "Waiting Material"
+                                    ? Colors.orange[700]
+                                    : order["status"] == "Ready to Process"
+                                        ? Colors.green[700]
+                                        : Colors.blue[700];
+
+                            return Container(
+                              margin: const EdgeInsets.only(bottom: 16),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 4),
                                   ),
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 6),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFF80CBC4)
-                                        .withOpacity(0.1),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: const Text(
-                                    "Status",
-                                    style: TextStyle(
-                                      color: Color(0xFF80CBC4),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
+                                ],
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // HEADER STATUS
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: color,
+                                      borderRadius: const BorderRadius.vertical(
+                                        top: Radius.circular(16),
+                                      ),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 8),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          order["orders"]["orderNo"] ?? "-",
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          order["status"],
+                                          style: TextStyle(
+                                            color: textColor,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              "Approved Date: -",
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey.shade600,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF80CBC4),
-                                  foregroundColor: Colors.white,
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(6),
+
+                                  // BODY CARD
+                                  Padding(
+                                    padding: const EdgeInsets.all(16),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          order["note"] ?? "-",
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey.shade800,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              "Prod. PIC: ${order['productionPic']}",
+                                              style: TextStyle(
+                                                  fontSize: 13,
+                                                  color: Colors.grey.shade700),
+                                            ),
+                                            Text(
+                                              "Approval: ${order['approvalPic']}",
+                                              style: TextStyle(
+                                                  fontSize: 13,
+                                                  color: Colors.grey.shade700),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 30),
+                                        SizedBox(
+                                          width: double.infinity,
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  const Color(0xFF80CBC4),
+                                              foregroundColor: Colors.white,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 12),
+                                            ),
+                                            onPressed: () {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                      "Order ${order['orders']['orderNo']} Approved!"),
+                                                ),
+                                              );
+                                            },
+                                            child: const Text(
+                                              "Approve",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 14),
-                                ),
-                                onPressed: () {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text("Test")),
-                                  );
-                                },
-                                child: const Text(
-                                  "Approve",
-                                  style: TextStyle(fontWeight: FontWeight.w600),
-                                ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
+                            );
+                          }).toList(),
+                        );
+                      }),
+
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.1,
                       ),

@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class ApiService {
-  final String baseUrl = "http://192.168.0.101:8080/api";
+  final String baseUrl = "http://192.168.100.6:8080/api";
 
   Future<Map<String, dynamic>?> login(String username, String password) async {
     final response = await http.post(
@@ -343,17 +343,24 @@ class ApiService {
   }
 
   //  ================== PREPARATION ORDER ==========================
-  Future<Map<String, dynamic>> insertPreparationOrder(String note,
-      String status, String approvalPIC, String productionPIC) async {
+  Future<Map<String, dynamic>> insertPreparationOrder(
+      String note,
+      String status,
+      String approvalPIC,
+      String productionPIC,
+      Map<String, dynamic>? selectedOrder) async {
+    final body = jsonEncode({
+      'note': note,
+      'status': status,
+      'approvalPic': approvalPIC,
+      'productionPic': productionPIC,
+      'orders': {'orderNo': selectedOrder?['orderNo']},
+    });
+
     final response = await http.post(
       Uri.parse("$baseUrl/preparation-order"),
       headers: {"Content-Type": "application/json"},
-      body: jsonEncode({
-        'note': note,
-        'status': status,
-        'approvalPIC': approvalPIC,
-        'productionPIC': productionPIC,
-      }),
+      body: body,
     );
 
     if (response.statusCode == 200) {

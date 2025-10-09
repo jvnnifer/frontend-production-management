@@ -17,6 +17,17 @@ class CreatePreparationOrder extends StatelessWidget {
     final controller = Get.find<AuthController>();
 
     final radioController = RadioController();
+
+    final args = Get.arguments ?? {};
+    final String? status = args['status'];
+
+    ever(radioController.selected, (val) {
+      controller.status.value = val;
+    });
+    if (status != null) {
+      radioController.setSelected(status);
+    }
+
     return Scaffold(
       body: Stack(
         children: [
@@ -64,7 +75,10 @@ class CreatePreparationOrder extends StatelessWidget {
                         itemsMaterial: controller.orders,
                         itemAsString: (m) => m?['orderNo'] ?? '',
                         baseColor: Color(0xFF80CBC4),
-                        onChanged: (value) {},
+                        onChanged: (value) {
+                          print("Order selected: $value");
+                          controller.selectedOrder.value = value ?? {};
+                        },
                       ),
                       SizedBox(height: 20),
                       Text(
@@ -93,6 +107,11 @@ class CreatePreparationOrder extends StatelessWidget {
                       ),
                       TextFieldCreate(
                         name: 'Note',
+                        onChanged: (val) {
+                          controller.notesPrep.value = val ?? '';
+                        },
+                        controller: TextEditingController(
+                            text: controller.notesPrep.value),
                       ),
                       SizedBox(height: 20),
                       Text(
@@ -104,7 +123,9 @@ class CreatePreparationOrder extends StatelessWidget {
                         itemsMaterial: controller.usersGudang,
                         itemAsString: (m) => m?['username'] ?? '',
                         baseColor: const Color(0xFF80CBC4),
-                        onChanged: (value) {},
+                        onChanged: (value) {
+                          controller.productionPIC.value = value?['username'];
+                        },
                       ),
                       SizedBox(height: 20),
                       Text(
@@ -116,22 +137,29 @@ class CreatePreparationOrder extends StatelessWidget {
                         itemsMaterial: controller.usersAdmin,
                         itemAsString: (m) => m?['username'] ?? '',
                         baseColor: const Color(0xFF80CBC4),
-                        onChanged: (value) {},
+                        onChanged: (value) {
+                          controller.approvalPIC.value = value?['username'];
+                        },
                       ),
                       SizedBox(height: 50),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF80CBC4),
-                            foregroundColor: Colors.white,
+                      Obx(
+                        () => SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF80CBC4),
+                              foregroundColor: Colors.white,
+                            ),
+                            onPressed: controller.isLoading.value
+                                ? null
+                                : () {
+                                    controller.createPreparationOrder();
+                                  },
+                            child: controller.isLoading.value
+                                ? const CircularProgressIndicator(
+                                    color: Colors.white)
+                                : Text("Buat Preparation Order"),
                           ),
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Test")),
-                            );
-                          },
-                          child: const Text("Buat Preparation Order"),
                         ),
                       ),
                       SizedBox(

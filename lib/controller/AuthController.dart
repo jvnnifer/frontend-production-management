@@ -61,10 +61,11 @@ class AuthController extends GetxController {
   var orderDetail = {}.obs;
 
   // preparation order
-  var orderPrep = ''.obs;
+  var prepOrders = <Map<String, dynamic>>[].obs;
   var notesPrep = ''.obs;
   var productionPIC = ''.obs;
   var approvalPIC = ''.obs;
+  var selectedOrder = Rx<Map<String, dynamic>?>(null);
 
   @override
   void onInit() {
@@ -128,7 +129,7 @@ class AuthController extends GetxController {
   Future<void> loadPreparationOrders() async {
     try {
       final result = await apiService.loadPreparationOrders();
-      orders.value = result;
+      prepOrders.value = result;
     } catch (e) {
       print("Error load Preparation Order: $e");
     }
@@ -612,10 +613,11 @@ class AuthController extends GetxController {
     isLoading.value = true;
     try {
       final result = await apiService.insertPreparationOrder(
-        note.value,
+        notesPrep.value,
         status.value,
         approvalPIC.value,
         productionPIC.value,
+        selectedOrder.value,
       );
 
       print("Preparation Order created: $result");
