@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jago_app/components/HomeBarChart.dart';
 import 'package:jago_app/components/ToggleSwitchTime.dart';
+import 'package:jago_app/controller/AuthController.dart';
 import '../components/CollapsibleSidebar.dart';
 import '../controller/SidebarController.dart';
 import 'package:get/get.dart';
@@ -13,9 +14,12 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final SidebarController sidebar = Get.find();
+    final controller = Get.find<AuthController>();
+
     DateTime sysDate = DateTime.now();
     String dateNow = DateFormat('dd-MMM-yyyy').format(sysDate);
 
+    controller.loadMaterialLogSummary();
     return Scaffold(
       body: Stack(
         children: [
@@ -60,134 +64,136 @@ class HomePage extends StatelessWidget {
                   height: 10,
                 ),
                 // bagian card teal
-                Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.only(left: 20, right: 20),
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF80CBC4),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            textBaseline: TextBaseline.alphabetic,
-                            children: [
-                              Text(
-                                'Hari ini,',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                '$dateNow',
-                                style: TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 16,
+                Obx(
+                  () => Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.only(left: 20, right: 20),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF80CBC4),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.baseline,
+                              textBaseline: TextBaseline.alphabetic,
+                              children: [
+                                Text(
+                                  'Hari ini,',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
                                 ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 30),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    "5000",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  '$dateNow',
+                                  style: TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 16,
                                   ),
-                                  SizedBox(height: 8),
-                                  Text(
-                                    "Produksi",
-                                    style: TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: 16,
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 30),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      controller.totalProduksi.value.toString(),
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              // pembatas
-                              Container(
-                                width: 1,
-                                height: 50,
-                                color: Colors.white,
-                                margin: EdgeInsets.symmetric(horizontal: 5),
-                              ),
-                              // end
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    "100",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold,
+                                    SizedBox(height: 8),
+                                    Text(
+                                      "Produksi",
+                                      style: TextStyle(
+                                        color: Colors.white70,
+                                        fontSize: 16,
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(height: 8),
-                                  Text(
-                                    "Stok Masuk",
-                                    style: TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: 16,
+                                  ],
+                                ),
+                                // pembatas
+                                Container(
+                                  width: 1,
+                                  height: 50,
+                                  color: Colors.white,
+                                  margin: EdgeInsets.symmetric(horizontal: 5),
+                                ),
+                                // end
+                                Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      controller.totalMasuk.value.toString(),
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              // pembatas
-                              Container(
-                                width: 1,
-                                height: 50,
-                                color: Colors.white,
-                                margin: EdgeInsets.symmetric(horizontal: 5),
-                              ),
-                              // end
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    "200",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold,
+                                    SizedBox(height: 8),
+                                    Text(
+                                      "Stok Masuk",
+                                      style: TextStyle(
+                                        color: Colors.white70,
+                                        fontSize: 16,
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(height: 8),
-                                  Text(
-                                    "Stok Keluar",
-                                    style: TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: 16,
+                                  ],
+                                ),
+                                // pembatas
+                                Container(
+                                  width: 1,
+                                  height: 50,
+                                  color: Colors.white,
+                                  margin: EdgeInsets.symmetric(horizontal: 5),
+                                ),
+                                // end
+                                Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      controller.totalKeluar.value.toString(),
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                    ],
+                                    SizedBox(height: 8),
+                                    Text(
+                                      "Stok Keluar",
+                                      style: TextStyle(
+                                        color: Colors.white70,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 // end card biru

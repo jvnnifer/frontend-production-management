@@ -77,6 +77,7 @@ class CreateMaterialLog extends StatelessWidget {
                       SearchableDropdownWidget(
                         label: 'Material',
                         itemsMaterial: controller.materials,
+                        itemAsString: (m) => m?['materialName'] ?? '',
                         baseColor: Color(0xFF80CBC4),
                         onChanged: (value) {
                           controller.selectedMaterialForLog.value = value;

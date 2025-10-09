@@ -47,6 +47,9 @@ class AuthController extends GetxController {
   var type = ''.obs;
   var qty = ''.obs;
   var note = ''.obs;
+  var totalMasuk = 0.obs;
+  var totalProduksi = 0.obs;
+  var totalKeluar = 0.obs;
   final selectedMaterialForLog = Rx<Map<String, dynamic>?>(null);
   var materialLogs = <Map<String, dynamic>>[].obs;
 
@@ -533,6 +536,17 @@ class AuthController extends GetxController {
       print("Material logs result: $result");
     } catch (e) {
       print("Error load material logs: $e");
+    }
+  }
+
+  Future<void> loadMaterialLogSummary() async {
+    try {
+      final result = await apiService.loadMaterialLogSummary();
+      totalMasuk.value = result['totalMasuk'] ?? 0;
+      totalKeluar.value = result['totalKeluar'] ?? 0;
+      totalProduksi.value = result['totalProduksi'] ?? 0;
+    } catch (e) {
+      print("Error load summary: $e");
     }
   }
 

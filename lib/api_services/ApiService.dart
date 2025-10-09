@@ -266,6 +266,16 @@ class ApiService {
     }
   }
 
+  Future<Map<String, dynamic>> loadMaterialLogSummary() async {
+    final response = await http.get(Uri.parse("$baseUrl/material-log/summary"));
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception("Failed to load material log summary: ${response.body}");
+    }
+  }
+
   // ================ ORDER =================
   Future<void> insertOrder(
       String orderNo,
