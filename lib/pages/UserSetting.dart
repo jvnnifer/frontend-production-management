@@ -106,8 +106,29 @@ class UserSetting extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 5),
-                        Obx(
-                          () => DropdownWidget(
+                        Obx(() {
+                          final roleId = controller.selectedRoleId.value;
+
+                          // Kalau role = ROLE003 (owner), tampilkan teks biasa
+                          if (roleId == 'ROLE003') {
+                            return Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 16),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: Colors.grey.shade400),
+                              ),
+                              child: Text(
+                                controller.selectedRoleName,
+                                style: const TextStyle(
+                                    fontSize: 16, color: Colors.black87),
+                              ),
+                            );
+                          }
+
+                          return DropdownWidget(
                             label: "",
                             items: controller.roles
                                 .map((role) => role['roleName'] as String)
@@ -115,11 +136,10 @@ class UserSetting extends StatelessWidget {
                             initialValue:
                                 controller.selectedRoleId.value.isEmpty
                                     ? null
-                                    : controller.roles.firstWhere(
-                                        (r) =>
-                                            r['id'] ==
-                                            controller.selectedRoleId.value,
-                                      )['roleName'],
+                                    : controller.roles.firstWhere((r) =>
+                                        r['id'] ==
+                                        controller
+                                            .selectedRoleId.value)['roleName'],
                             onChanged: (value) {
                               if (value != null) {
                                 final selected = controller.roles
@@ -128,8 +148,8 @@ class UserSetting extends StatelessWidget {
                                     selected['id'];
                               }
                             },
-                          ),
-                        ),
+                          );
+                        }),
                         SizedBox(
                           height: 50,
                         ),

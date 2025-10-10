@@ -92,6 +92,21 @@ class ApiService {
     }
   }
 
+  Future<List<dynamic>> fetchOwnerRole() async {
+    final response = await http.get(Uri.parse("$baseUrl/owner-role"));
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      if (data is List) {
+        return data;
+      } else {
+        return [];
+      }
+    } else {
+      throw Exception("Failed to fetch owner roles: ${response.statusCode}");
+    }
+  }
+
   // ========================= MATERIAL =============================
 
   Future<Map<String, dynamic>> insertMaterial(

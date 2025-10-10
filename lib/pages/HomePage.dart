@@ -6,15 +6,18 @@ import '../components/CollapsibleSidebar.dart';
 import '../controller/SidebarController.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:jago_app/components/HomeMenuItem.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     final SidebarController sidebar = Get.find();
     final controller = Get.find<AuthController>();
+
+    final menus = getHomeMenuByRole(controller.selectedRoleId.value);
 
     DateTime sysDate = DateTime.now();
     String dateNow = DateFormat('dd-MMM-yyyy').format(sysDate);
@@ -207,51 +210,21 @@ class HomePage extends StatelessWidget {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
-                Wrap(
-                  spacing: 30,
-                  runSpacing: 10,
-                  alignment: WrapAlignment.center,
-                  children: [
-                    buildMenuItem(
-                      icon: FontAwesomeIcons.boxOpen,
-                      label: "Katalog",
-                      onTap: () => Get.toNamed('/catalog'),
-                    ),
-                    buildMenuItem(
-                      icon: FontAwesomeIcons.industry,
-                      label: "Persiapan Produksi",
-                      onTap: () => Get.toNamed('/preparationorder'),
-                    ),
-                    buildMenuItem(
-                      icon: FontAwesomeIcons.cubes,
-                      label: "Bahan Baku",
-                      onTap: () => Get.toNamed('/rawmaterial'),
-                    ),
-                    buildMenuItem(
-                      icon: FontAwesomeIcons.boxArchive,
-                      label: "Material Log",
-                      onTap: () => Get.toNamed('/materiallog'),
-                    ),
-                    buildMenuItem(
-                      icon: Icons.shopping_cart,
-                      label: "Order",
-                      onTap: () => Get.toNamed('/order'),
-                    ),
-                    buildMenuItem(
-                      icon: Icons.admin_panel_settings,
-                      label: "Role",
-                      onTap: () {},
-                    ),
-                    buildMenuItem(
-                      icon: Icons.rule,
-                      label: "Privilege",
-                      onTap: () {},
-                    ),
-                  ],
+                Center(
+                  child: Wrap(
+                    spacing: 30,
+                    runSpacing: 10,
+                    alignment: WrapAlignment.center,
+                    children: menus.map((menu) {
+                      return buildMenuItem(
+                        icon: menu.icon,
+                        label: menu.label,
+                        onTap: () => Get.toNamed(menu.route),
+                      );
+                    }).toList(),
+                  ),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
+                const SizedBox(height: 20),
                 Container(
                   padding: const EdgeInsets.only(left: 20),
                   child: const Text(

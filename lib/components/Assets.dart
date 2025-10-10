@@ -9,48 +9,48 @@ List<SideMenuModel> sideMenus = [
     icon: const Icon(Icons.home, color: Colors.white),
     route: "/home",
   ),
-  SideMenuModel(
-    title: "Dashboard",
-    icon: const Icon(Icons.dashboard, color: Colors.white),
-    route: "/dashboard",
-  ),
-  SideMenuModel(
-    title: "Persiapan Produksi",
-    icon: const Icon(Icons.receipt_long, color: Colors.white),
-    route: "/createPrepOrder",
-  ),
 ];
 
 // === DATA GUDANG ===
 List<SideMenuModel> sideMenusGudang = [
   SideMenuModel(
-    title: "Create Bahan Baku",
+    title: "Bahan Baku",
     icon: const FaIcon(FontAwesomeIcons.cubes, color: Colors.white),
-    route: "/creatematerial",
+    route: "/rawmaterial",
   ),
   SideMenuModel(
-    title: "Create Material Log",
+    title: "Material Log",
     icon: const FaIcon(FontAwesomeIcons.boxArchive, color: Colors.white),
-    route: "/createmateriallog",
+    route: "/materiallog",
+  ),
+  SideMenuModel(
+    title: "Persiapan Produksi",
+    icon: const Icon(Icons.receipt_long, color: Colors.white),
+    route: "/preparationorder",
   ),
 ];
 
 // === DATA ADMIN ===
 List<SideMenuModel> sideMenusAdmin = [
   SideMenuModel(
-    title: "Create Catalog Item",
+    title: "Catalog Item",
     icon: const FaIcon(FontAwesomeIcons.boxOpen, color: Colors.white),
-    route: "/create",
+    route: "/catalog",
   ),
   SideMenuModel(
-    title: "Create Order",
+    title: "Order",
     icon: const Icon(Icons.shopping_cart, color: Colors.white),
-    route: "/createorder",
+    route: "/order",
   ),
 ];
 
 // === HAK AKSES ===
 List<SideMenuModel> sideMenus3 = [
+  SideMenuModel(
+    title: "Dashboard",
+    icon: const Icon(Icons.dashboard, color: Colors.white),
+    route: "/dashboard",
+  ),
   SideMenuModel(
     title: "Kelola Role",
     icon: const Icon(Icons.admin_panel_settings, color: Colors.white),
@@ -62,3 +62,33 @@ List<SideMenuModel> sideMenus3 = [
     route: "/manageprivilege",
   ),
 ];
+
+List<SideMenuModel> getMenuByRole(String roleCode) {
+  List<SideMenuModel> menus = [...sideMenus];
+
+  switch (roleCode) {
+    case "ROLE001": // ADMIN
+      menus.addAll(sideMenusAdmin);
+      break;
+
+    case "ROLE002": // GUDANG
+      menus.addAll(sideMenusGudang);
+      break;
+
+    case "ROLE003": // OWNER
+      menus.addAll([
+        ...sideMenus3, // hak akses
+        SideMenuModel(
+          title: "Dashboard",
+          icon: const Icon(Icons.dashboard, color: Colors.white),
+          route: "/dashboard",
+        ),
+      ]);
+      break;
+
+    default:
+      break;
+  }
+
+  return menus;
+}

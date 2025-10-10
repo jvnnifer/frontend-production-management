@@ -87,13 +87,18 @@ class AuthController extends GetxController {
     selectedMaterials.clear();
   }
 
+  void logout() {
+    username.value = '';
+    selectedRoleId.value = '';
+  }
+
   Future<String?> encodeImageToBase64(String? path) async {
     if (path == null || path.isEmpty) return null;
     final bytes = await File(path).readAsBytes();
     return base64Encode(bytes);
   }
 
-  Future<void> loadRoles() async {
+  Future<void> loadRoles({bool isOwner = false}) async {
     try {
       final result = await apiService.fetchRoles();
       roles.assignAll(result);
@@ -151,9 +156,9 @@ class AuthController extends GetxController {
     if (selectedRoleId.value.isEmpty) return '';
     final role = roles.firstWhere(
       (r) => r['id'] == selectedRoleId.value,
-      orElse: () => {},
+      orElse: () => {'id': '', 'roleName': ''},
     );
-    return role.isNotEmpty ? role['roleName'] : '';
+    return role['roleName'] ?? '';
   }
 
   void register() async {
@@ -196,19 +201,43 @@ class AuthController extends GetxController {
     try {
       final result = await apiService.login(username.value, password.value);
       print(result);
+
       if (result != null && result.isNotEmpty) {
         userId.value = result['id'];
         username.value = result['username'];
         selectedRoleId.value = result['roleId'];
+
+        // 🧩 Tambahkan blok ini
+        if (roles.isEmpty) {
+          roles.assignAll(await apiService.fetchRoles());
+        }
+
+        var roleName = selectedRoleName;
+
+        if (roleName.isEmpty) {
+          final ownerRoles = await apiService.fetchOwnerRole();
+          if (ownerRoles.isNotEmpty) {
+            roles.addAll(ownerRoles.map((r) => {
+                  'id': r['id'],
+                  'roleName': r['roleName'],
+                  'isOwner': r['isOwner'],
+                }));
+            roleName = selectedRoleName; // update setelah ditambah
+          }
+        }
+
+        print("✅ Logged in as role: $roleName");
+
         Get.snackbar(
           "Success",
-          "Login Success",
+          "Login Success ($roleName)",
           backgroundColor: Colors.green,
           colorText: Colors.white,
           snackPosition: SnackPosition.TOP,
-          duration: Duration(seconds: 1),
+          duration: const Duration(seconds: 1),
         );
-        await Future.delayed(Duration(seconds: 1));
+
+        await Future.delayed(const Duration(seconds: 1));
         Get.toNamed('/home');
       } else {
         Get.snackbar(
@@ -217,7 +246,7 @@ class AuthController extends GetxController {
           backgroundColor: Colors.red,
           colorText: Colors.white,
           snackPosition: SnackPosition.TOP,
-          duration: Duration(seconds: 1),
+          duration: const Duration(seconds: 1),
         );
       }
     } catch (e) {
@@ -304,7 +333,7 @@ class AuthController extends GetxController {
       print("Error create material: $e");
       Get.snackbar(
         "Error",
-        "Error to create material",
+        "Error void to create material",
         backgroundColor: Colors.red,
         colorText: Colors.white,
         snackPosition: SnackPosition.TOP,
