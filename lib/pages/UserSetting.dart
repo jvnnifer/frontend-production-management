@@ -116,9 +116,9 @@ class UserSetting extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(
                                   vertical: 12, horizontal: 16),
                               decoration: BoxDecoration(
-                                color: Colors.grey[200],
+                                color: Colors.teal[100],
                                 borderRadius: BorderRadius.circular(8),
-                                border: Border.all(color: Colors.grey.shade400),
+                                border: Border.all(color: Colors.teal.shade400),
                               ),
                               child: Text(
                                 controller.selectedRoleName,

@@ -48,7 +48,7 @@ class OrderDetail extends StatelessWidget {
                 return const Center(
                   child: Padding(
                     padding: EdgeInsets.only(top: 100),
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(color: Color(0xFF80CBC4)),
                   ),
                 );
               }

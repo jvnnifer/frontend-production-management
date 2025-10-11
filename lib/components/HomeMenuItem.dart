@@ -23,6 +23,10 @@ List<HomeMenuItem> getHomeMenuByRole(String roleCode) {
             route: "/catalog"),
         HomeMenuItem(
             icon: Icons.shopping_cart, label: "Order", route: "/order"),
+        HomeMenuItem(
+            icon: FontAwesomeIcons.industry,
+            label: "Persiapan Produksi",
+            route: "/preparationorder"),
       ];
 
     case "ROLE002": // GUDANG

@@ -207,7 +207,6 @@ class AuthController extends GetxController {
         username.value = result['username'];
         selectedRoleId.value = result['roleId'];
 
-        // 🧩 Tambahkan blok ini
         if (roles.isEmpty) {
           roles.assignAll(await apiService.fetchRoles());
         }
@@ -222,15 +221,13 @@ class AuthController extends GetxController {
                   'roleName': r['roleName'],
                   'isOwner': r['isOwner'],
                 }));
-            roleName = selectedRoleName; // update setelah ditambah
+            roleName = selectedRoleName;
           }
         }
 
-        print("✅ Logged in as role: $roleName");
-
         Get.snackbar(
           "Success",
-          "Login Success ($roleName)",
+          "Login Success",
           backgroundColor: Colors.green,
           colorText: Colors.white,
           snackPosition: SnackPosition.TOP,

@@ -42,6 +42,11 @@ List<SideMenuModel> sideMenusAdmin = [
     icon: const Icon(Icons.shopping_cart, color: Colors.white),
     route: "/order",
   ),
+  SideMenuModel(
+    title: "Persiapan Produksi",
+    icon: const Icon(Icons.receipt_long, color: Colors.white),
+    route: "/preparationorder",
+  ),
 ];
 
 // === HAK AKSES ===
