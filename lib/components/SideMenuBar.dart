@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:jago_app/components/HomeMenuItem.dart';
 import 'package:jago_app/controller/AuthController.dart';
 import 'package:jago_app/controller/SidebarController.dart';
-import 'Assets.dart';
 import 'SideMenuTile.dart';
 
 class SideMenuBar extends StatelessWidget {
@@ -35,68 +35,36 @@ class SideMenuBar extends StatelessWidget {
       color: const Color(0xFF1C2841),
       padding: const EdgeInsets.only(top: 40),
       child: Obx(() {
-        String role = authController.selectedRoleId.value;
+        final menus = getMenusByPrivileges(authController.rolePrivileges);
 
         return Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             // === PROFILE ===
-            Column(
-              children: [
-                ListTile(
-                  leading: const CircleAvatar(
-                    backgroundColor: Colors.white24,
-                    child: Icon(CupertinoIcons.person, color: Colors.white),
-                  ),
-                  title: Text(
-                    authController.username.value,
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  subtitle: Text(
-                    authController.selectedRoleName,
-                    style: const TextStyle(color: Colors.white70),
-                  ),
-                  onTap: () => sidebar.handleMenuTap("/usersetting"),
-                ),
-                const Divider(color: Colors.white24),
-              ],
+            ListTile(
+              leading: const CircleAvatar(
+                backgroundColor: Colors.white24,
+                child: Icon(Icons.person, color: Colors.white),
+              ),
+              title: Text(authController.username.value,
+                  style: const TextStyle(color: Colors.white)),
+              subtitle: Text(authController.selectedRoleName,
+                  style: const TextStyle(color: Colors.white70)),
+              onTap: () => sidebar.handleMenuTap("/usersetting"),
             ),
+            const Divider(color: Colors.white24),
 
-            // === MENU  ===
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildSectionTitle("UTAMA"),
-                ...sideMenus.map((menu) => SideMenuTile(
-                      menu: menu,
-                      isActive: menu.route == selectedRoute,
-                      press: () => onSelected(menu.route),
-                    )),
-                if (role == "ROLE001") ...[
-                  _buildSectionTitle("DATA ADMIN"),
-                  ...sideMenusAdmin.map((menu) => SideMenuTile(
-                        menu: menu,
-                        isActive: menu.route == selectedRoute,
-                        press: () => onSelected(menu.route),
-                      )),
-                ],
-                if (role == "ROLE002") ...[
-                  _buildSectionTitle("DATA GUDANG"),
-                  ...sideMenusGudang.map((menu) => SideMenuTile(
-                        menu: menu,
-                        isActive: menu.route == selectedRoute,
-                        press: () => onSelected(menu.route),
-                      )),
-                ],
-                if (role == "ROLE003") ...[
-                  _buildSectionTitle("HAK AKSES"),
-                  ...sideMenus3.map((menu) => SideMenuTile(
-                        menu: menu,
-                        isActive: menu.route == selectedRoute,
-                        press: () => onSelected(menu.route),
-                      )),
-                ],
-              ],
+            // === MENU ===
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: menus
+                    .map((menu) => SideMenuTile(
+                          menu: menu,
+                          isActive: menu.route == selectedRoute,
+                          press: () => onSelected(menu.route),
+                        ))
+                    .toList(),
+              ),
             ),
 
             // === LOGOUT  ===

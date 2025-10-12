@@ -70,6 +70,12 @@ class AuthController extends GetxController {
   var approvalPIC = ''.obs;
   var selectedOrder = Rx<Map<String, dynamic>?>(null);
 
+  // privileges
+  var privileges = <Map<String, dynamic>>[].obs;
+  var allPrivileges = <Map<String, dynamic>>[].obs;
+  var userPrivileges = <String>[].obs;
+  RxList<String> rolePrivileges = <String>[].obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -90,6 +96,11 @@ class AuthController extends GetxController {
   void logout() {
     username.value = '';
     selectedRoleId.value = '';
+  }
+
+  void setRolePrivileges(List<Map<String, dynamic>> privileges) {
+    rolePrivileges.value =
+        privileges.map((p) => p['privilegeCode'].toString()).toList();
   }
 
   Future<String?> encodeImageToBase64(String? path) async {
@@ -212,6 +223,13 @@ class AuthController extends GetxController {
         }
 
         var roleName = selectedRoleName;
+
+        // === LOAD PRIVILEGES ===
+        final privilegesData =
+            await apiService.getPrivilegesByRole(selectedRoleId.value);
+        rolePrivileges.value =
+            privilegesData.map((p) => p['privilegeCode'].toString()).toList();
+        print("Loaded rolePrivileges: $rolePrivileges");
 
         if (roleName.isEmpty) {
           final ownerRoles = await apiService.fetchOwnerRole();
@@ -693,5 +711,27 @@ class AuthController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  // =================== PRIVILEGES ==================
+  Future<void> loadPrivilegesByRole(String roleId) async {
+    try {
+      final result = await apiService.getPrivilegesByRole(roleId);
+      privileges.assignAll(result);
+      print("Loaded ${result.length} privileges for role $roleId");
+    } catch (e) {
+      print("❌ Error loadPrivilegesByRole: $e");
+      Get.snackbar(
+        "Error",
+        "Gagal memuat privileges.",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  Future<void> loadAllPrivileges() async {
+    final result = await apiService.fetchAllPrivileges();
+    allPrivileges.assignAll(result);
   }
 }

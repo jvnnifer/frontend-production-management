@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'SideMenuModel.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jago_app/components/HomeMenuItem.dart';
 
 class SideMenuTile extends StatelessWidget {
-  final SideMenuModel menu;
+  final HomeMenuItem menu;
   final bool isActive;
   final VoidCallback press;
 
@@ -26,9 +27,12 @@ class SideMenuTile extends StatelessWidget {
             : null,
       ),
       child: ListTile(
-        leading: menu.icon,
+        leading: FaIcon(
+          menu.icon,
+          color: isActive ? Colors.tealAccent : Colors.white,
+        ),
         title: Text(
-          menu.title,
+          menu.label,
           style: TextStyle(
             color: isActive ? Colors.tealAccent : Colors.white,
             fontWeight: isActive ? FontWeight.bold : FontWeight.normal,

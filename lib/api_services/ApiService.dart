@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class ApiService {
-  final String baseUrl = "http://192.168.0.102:8080/api";
+  final String baseUrl = "http://192.168.100.6:8080/api";
 
   Future<Map<String, dynamic>?> login(String username, String password) async {
     final response = await http.post(
@@ -392,6 +392,113 @@ class ApiService {
       return jsonDecode(response.body);
     } else {
       throw Exception("Failed to insert preparation order: ${response.body}");
+    }
+  }
+
+  // ============== MANAGE ROLE ========================
+  Future<List<Map<String, dynamic>>> getPrivilegesByRole(String roleId) async {
+    final response = await http.get(
+      Uri.parse("$baseUrl/$roleId/privileges"),
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.cast<Map<String, dynamic>>();
+    } else {
+      throw Exception("Failed to load privileges: ${response.body}");
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchAllPrivileges() async {
+    final response = await http.get(
+      Uri.parse("$baseUrl/allprivileges"),
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.cast<Map<String, dynamic>>();
+    } else {
+      throw Exception("Failed to load all privileges: ${response.body}");
+    }
+  }
+
+  Future<void> saveRolePrivileges(
+      String roleId, List<String> selectedPrivileges) async {
+    final url = Uri.parse("$baseUrl/update-privileges/$roleId");
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(selectedPrivileges),
+      );
+
+      if (response.statusCode == 200) {
+        print('Privileges updated successfully');
+      } else {
+        print('Failed to update privileges: ${response.body}');
+      }
+    } catch (e) {
+      print('Error updating privileges: $e');
+    }
+  }
+
+  // =============== DASHBOARD ====================
+  // Preparation Order per Year
+  Future<Map<int, int>> getPreparationOrderPerYear() async {
+    final response = await http.get(
+      Uri.parse("$baseUrl/dashboard/preparation-order/yearly"),
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      // convert key dari String ke int
+      return data.map((key, value) => MapEntry(int.parse(key), value as int));
+    } else {
+      throw Exception(
+          "Failed to load preparation order yearly: ${response.body}");
+    }
+  }
+
+// Preparation Order per Month
+  Future<Map<int, int>> getPreparationOrderPerMonth(int year) async {
+    final response = await http.get(
+      Uri.parse("$baseUrl/dashboard/preparation-order/monthly?year=$year"),
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return data.map((key, value) => MapEntry(int.parse(key), value as int));
+    } else {
+      throw Exception(
+          "Failed to load preparation order monthly: ${response.body}");
+    }
+  }
+
+// Optional: Orders per Year / Month
+  Future<Map<int, int>> getOrderPerYear() async {
+    final response = await http.get(
+      Uri.parse("$baseUrl/dashboard/order/yearly"),
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return data.map((key, value) => MapEntry(int.parse(key), value as int));
+    } else {
+      throw Exception("Failed to load order yearly: ${response.body}");
+    }
+  }
+
+  Future<Map<int, int>> getOrderPerMonth(int year) async {
+    final response = await http.get(
+      Uri.parse("$baseUrl/dashboard/order/monthly?year=$year"),
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return data.map((key, value) => MapEntry(int.parse(key), value as int));
+    } else {
+      throw Exception("Failed to load order monthly: ${response.body}");
     }
   }
 }

@@ -17,8 +17,6 @@ class HomePage extends StatelessWidget {
     final SidebarController sidebar = Get.find();
     final controller = Get.find<AuthController>();
 
-    final menus = getHomeMenuByRole(controller.selectedRoleId.value);
-
     DateTime sysDate = DateTime.now();
     String dateNow = DateFormat('dd-MMM-yyyy').format(sysDate);
 
@@ -210,20 +208,24 @@ class HomePage extends StatelessWidget {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
-                Center(
-                  child: Wrap(
-                    spacing: 30,
-                    runSpacing: 10,
-                    alignment: WrapAlignment.center,
-                    children: menus.map((menu) {
-                      return buildMenuItem(
-                        icon: menu.icon,
-                        label: menu.label,
-                        onTap: () => Get.toNamed(menu.route),
-                      );
-                    }).toList(),
-                  ),
-                ),
+                Obx(() {
+                  final menus = getMenusByPrivileges(controller.rolePrivileges,
+                      includeHome: false);
+                  print("Menus: $menus");
+                  return Center(
+                    child: Wrap(
+                      spacing: 20,
+                      runSpacing: 10,
+                      children: menus.map((menu) {
+                        return buildMenuItem(
+                          icon: menu.icon,
+                          label: menu.label,
+                          onTap: () => Get.toNamed(menu.route),
+                        );
+                      }).toList(),
+                    ),
+                  );
+                }),
                 const SizedBox(height: 20),
                 Container(
                   padding: const EdgeInsets.only(left: 20),
@@ -283,7 +285,9 @@ class HomePage extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                Get.toNamed('/dashboard');
+                              },
                               child: Text('Lihat Selengkapnya'),
                             ),
                           ),

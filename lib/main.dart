@@ -6,6 +6,9 @@ import 'package:jago_app/pages/admin/CatalogShoes.dart';
 import 'package:jago_app/pages/admin/CreateOrder.dart';
 import 'package:jago_app/pages/admin/Order.dart';
 import 'package:jago_app/pages/admin/OrderDetail.dart';
+import 'package:jago_app/pages/owner/DashboardPage.dart';
+import 'package:jago_app/pages/owner/Privileges.dart';
+import 'package:jago_app/pages/owner/Role.dart';
 import 'package:jago_app/pages/warehouse/CreateMaterial.dart';
 import 'package:jago_app/pages/warehouse/CreateMaterialLog.dart';
 import 'package:jago_app/pages/admin/CreateProduct.dart';
@@ -41,6 +44,9 @@ void main() {
       GetPage(name: '/order', page: () => Order()),
       GetPage(name: '/materiallog', page: () => MaterialLog()),
       GetPage(name: '/orderdetail', page: () => OrderDetail()),
+      GetPage(name: '/manageprivilege', page: () => Privileges()),
+      GetPage(name: '/managerole', page: () => Role()),
+      GetPage(name: '/dashboard', page: () => DashboardPage())
     ],
   ));
 }
