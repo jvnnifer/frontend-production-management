@@ -192,7 +192,23 @@ class CatalogShoes extends StatelessWidget {
                                                       vertical: 10),
                                                 ),
                                                 onPressed: () {
-                                                  // TODO: tambahin action edit
+                                                  Get.toNamed(
+                                                    "/create",
+                                                    arguments: {
+                                                      "id": item['id'],
+                                                      "title": item['title'],
+                                                      "description":
+                                                          item['description'],
+                                                      "price": item['price']
+                                                          .toString(),
+                                                      "attachment":
+                                                          item['attachment'],
+                                                      "materials":
+                                                          item['materials'],
+                                                      "createdBy":
+                                                          item['createdBy'],
+                                                    },
+                                                  );
                                                 },
                                                 child: const Text(
                                                   "Edit",
@@ -218,7 +234,27 @@ class CatalogShoes extends StatelessWidget {
                                                       vertical: 10),
                                                 ),
                                                 onPressed: () {
-                                                  // TODO: tambahin action delete
+                                                  final confirm =
+                                                      Get.defaultDialog<bool>(
+                                                    title: "Hapus Item?",
+                                                    middleText:
+                                                        "Apakah kamu yakin ingin menghapus ${item['title']}?",
+                                                    textCancel: "Batal",
+                                                    textConfirm: "Hapus",
+                                                    confirmTextColor:
+                                                        Colors.white,
+                                                    buttonColor: Colors.red,
+                                                    onConfirm: () =>
+                                                        Get.back(result: true),
+                                                    onCancel: () =>
+                                                        Get.back(result: false),
+                                                  );
+
+                                                  if (confirm == true) {
+                                                    controller
+                                                        .deleteCatalogItem(
+                                                            item['id']);
+                                                  }
                                                 },
                                                 child: const Text(
                                                   "Delete",

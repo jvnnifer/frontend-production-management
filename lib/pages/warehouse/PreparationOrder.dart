@@ -185,37 +185,40 @@ class PreparationOrder extends StatelessWidget {
                                           ],
                                         ),
                                         const SizedBox(height: 30),
-                                        SizedBox(
-                                          width: double.infinity,
-                                          child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  const Color(0xFF80CBC4),
-                                              foregroundColor: Colors.white,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 12),
-                                            ),
-                                            onPressed: () {
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                SnackBar(
-                                                  content: Text(
-                                                      "Order ${order['orders']['orderNo']} Approved!"),
+                                        if (controller.selectedRoleId ==
+                                                "ROLE001" &&
+                                            order["status"] ==
+                                                "Waiting Material")
+                                          SizedBox(
+                                            width: double.infinity,
+                                            child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    const Color(0xFF80CBC4),
+                                                foregroundColor: Colors.white,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
                                                 ),
-                                              );
-                                            },
-                                            child: const Text(
-                                              "Approve",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.w600),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 12),
+                                              ),
+                                              onPressed: () async {
+                                                controller
+                                                    .approvePreparationOrder(
+                                                        order["id"]);
+                                              },
+                                              child: const Text(
+                                                "Approve",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                              ),
                                             ),
-                                          ),
-                                        ),
+                                          )
+                                        else
+                                          const SizedBox.shrink(),
                                       ],
                                     ),
                                   ),

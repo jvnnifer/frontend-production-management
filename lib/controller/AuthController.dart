@@ -532,6 +532,31 @@ class AuthController extends GetxController {
     }
   }
 
+  Future<void> deleteCatalogItem(String id) async {
+    try {
+      await apiService.deleteCatalog(id);
+      await loadCatalog();
+      update();
+      Get.snackbar(
+        "Success",
+        "Catalog Item deleted",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
+        duration: Duration(seconds: 1),
+      );
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        "Failed to delete catalog item",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
+        duration: Duration(seconds: 1),
+      );
+    }
+  }
+
   // ============= MATERIAL LOG ==============
   Future<void> createMaterialLog() async {
     isLoading.value = true;
@@ -713,6 +738,43 @@ class AuthController extends GetxController {
     }
   }
 
+  void approvePreparationOrder(String orderId) async {
+    try {
+      final updated = await apiService.updatePreparationOrderStatus(
+        orderId,
+        "Ready to Process",
+      );
+
+      if (updated != null) {
+        final index = prepOrders.indexWhere((order) => order["id"] == orderId);
+        if (index != -1) {
+          prepOrders[index] = updated;
+          prepOrders.refresh();
+        }
+
+        Get.snackbar(
+          "Success",
+          "Preparation Order approved.",
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+          duration: Duration(seconds: 1),
+        );
+      } else {
+        Get.snackbar(
+          "Error",
+          "Preparation Order approval failed. Please contact the admin.",
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+          duration: Duration(seconds: 1),
+        );
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    }
+  }
+
   // =================== PRIVILEGES ==================
   Future<void> loadPrivilegesByRole(String roleId) async {
     try {
@@ -720,7 +782,7 @@ class AuthController extends GetxController {
       privileges.assignAll(result);
       print("Loaded ${result.length} privileges for role $roleId");
     } catch (e) {
-      print("❌ Error loadPrivilegesByRole: $e");
+      print("Error loadPrivilegesByRole: $e");
       Get.snackbar(
         "Error",
         "Gagal memuat privileges.",

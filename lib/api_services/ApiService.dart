@@ -395,6 +395,30 @@ class ApiService {
     }
   }
 
+  Future<Map<String, dynamic>?> updatePreparationOrderStatus(
+      String id, String status) async {
+    final url = Uri.parse('$baseUrl/update-preporder-status/$id');
+
+    final response = await http.put(
+      url,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({'status': status}),
+    );
+
+    print('URL: $url');
+    print('Body: ${jsonEncode({'status': status})}');
+    print('Response: ${response.statusCode}');
+    print('Response Body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      return null;
+    }
+  }
+
   // ============== MANAGE ROLE ========================
   Future<List<Map<String, dynamic>>> getPrivilegesByRole(String roleId) async {
     final response = await http.get(

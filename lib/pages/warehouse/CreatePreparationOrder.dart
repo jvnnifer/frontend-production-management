@@ -92,7 +92,6 @@ class CreatePreparationOrder extends StatelessWidget {
                             child: RadioButton(
                               options: [
                                 "Waiting Material",
-                                "Ready to Process",
                                 "Scheduled",
                               ],
                               controller: radioController,

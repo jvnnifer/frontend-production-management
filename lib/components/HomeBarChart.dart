@@ -94,7 +94,7 @@ class HomeBarChart extends StatelessWidget {
             controller.yearlyData.map((k, v) => MapEntry(k, v.toDouble()));
 
         if (yearlyData.isEmpty) {
-          return const Center(child: Text('Tidak ada data tahunan'));
+          return const Center(child: Text('There is no yearly data.'));
         }
 
         final currentYear = DateTime.now().year;

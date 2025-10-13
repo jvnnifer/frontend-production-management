@@ -17,25 +17,29 @@ class CreateProduct extends StatelessWidget {
 
     final args = Get.arguments ?? {};
     final String? catalogItemId = args['id'];
-    final String? title = args['title'];
-    final String? createdBy = args['createdBy'];
-    final String? description = args['description'];
-    final String? price = args['price'].toString();
-    final String? attachment = args['attachment'];
-    final List<dynamic>? selectedMaterialsArg = args['materials'];
 
     if (catalogItemId != null) {
-      controller.createdBy.value = createdBy ?? '';
-      controller.title.value = title ?? '';
-      controller.description.value = description ?? '';
-      controller.price.value = price ?? '';
-      controller.attachment.value = attachment ?? '';
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        controller.title.value = args['title'] ?? '';
+        controller.createdBy.value = args['createdBy'] ?? '';
+        controller.description.value = args['description'] ?? '';
+        controller.price.value = args['price']?.toString() ?? '';
+        controller.attachment.value = args['attachment'] ?? '';
 
-      if (selectedMaterialsArg != null) {
-        controller.selectedMaterials.assignAll(selectedMaterialsArg
-            .map((e) => Map<String, dynamic>.from(e))
-            .toList());
-      }
+        final materialsArg = args['materials'] ?? [];
+        controller.selectedMaterials.assignAll(
+          List<Map<String, dynamic>>.from(materialsArg),
+        );
+      });
+    } else {
+      // reset field ketika mode create
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        controller.title.value = '';
+        controller.description.value = '';
+        controller.price.value = '';
+        controller.attachment.value = '';
+        controller.selectedMaterials.clear();
+      });
     }
 
     final materials = controller.materials;
@@ -47,6 +51,7 @@ class CreateProduct extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                /// 🟢 Header
                 Obx(() => Container(
                       height: 100,
                       padding: const EdgeInsets.only(left: 10, top: 30),
@@ -59,11 +64,13 @@ class CreateProduct extends StatelessWidget {
                                   onPressed: sidebar.toggleSidebar,
                                 )
                               : const SizedBox(width: 48),
-                          const Padding(
-                            padding: EdgeInsets.all(20),
+                          Padding(
+                            padding: const EdgeInsets.all(20),
                             child: Text(
-                              'Produksi Internal',
-                              style: TextStyle(
+                              catalogItemId == null
+                                  ? 'Tambah Catalog'
+                                  : 'Edit Catalog',
+                              style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -73,48 +80,37 @@ class CreateProduct extends StatelessWidget {
                         ],
                       ),
                     )),
+
                 Container(
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Nama Produk",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
+                      _label("Nama Produk"),
                       TextFieldCreate(
                         name: "Nama Produk",
                         onChanged: (value) => controller.title.value = value,
                         initialValue: controller.title.value,
                       ),
-                      SizedBox(height: 20),
-                      Text(
-                        "Deskripsi",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
+                      const SizedBox(height: 20),
+                      _label("Deskripsi"),
                       TextFieldCreate(
                         name: "Deskripsi",
                         onChanged: (value) =>
                             controller.description.value = value,
                         initialValue: controller.description.value,
                       ),
-                      SizedBox(height: 20),
-                      Text(
-                        "Harga",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
+                      const SizedBox(height: 20),
+                      _label("Harga"),
                       TextFieldCreate(
-                        name: 'Harga',
+                        name: "Harga",
                         keyboardType: TextInputType.number,
                         onChanged: (value) => controller.price.value = value,
                         initialValue: controller.price.value,
                       ),
-                      SizedBox(height: 20),
-                      Text(
-                        "Material",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 20),
+                      _label("Material"),
+                      const SizedBox(height: 5),
                       MultiSelectDropdown(
                         title: "Material",
                         options: materials,
@@ -123,17 +119,14 @@ class CreateProduct extends StatelessWidget {
                           controller.selectedMaterials.assignAll(selected);
                         },
                       ),
-                      SizedBox(height: 20),
-                      Text(
-                        "Gambar",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
+                      const SizedBox(height: 20),
+                      _label("Gambar"),
                       ImagePickerWidget(
                         initialImage: controller.attachment.value.isNotEmpty
                             ? controller.attachment.value
                             : null,
                       ),
-                      SizedBox(height: 50),
+                      const SizedBox(height: 50),
                       Obx(
                         () => SizedBox(
                           width: double.infinity,
@@ -141,29 +134,33 @@ class CreateProduct extends StatelessWidget {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF80CBC4),
                               foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 14),
                             ),
                             onPressed: controller.isLoading.value
                                 ? null
-                                : () {
+                                : () async {
                                     if (catalogItemId == null) {
-                                      controller.createCatalogItem();
+                                      await controller.createCatalogItem();
                                     } else {
-                                      controller
+                                      await controller
                                           .updateCatalogItem(catalogItemId);
                                     }
                                   },
                             child: controller.isLoading.value
                                 ? const CircularProgressIndicator(
-                                    color: Colors.white)
-                                : Text(catalogItemId == null
-                                    ? "Buat Catalog"
-                                    : "Update Catalog"),
+                                    color: Colors.white,
+                                  )
+                                : Text(
+                                    catalogItemId == null
+                                        ? "Buat Catalog"
+                                        : "Update Catalog",
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
                           ),
                         ),
                       ),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.1,
-                      ),
+                          height: MediaQuery.of(context).size.height * 0.1),
                     ],
                   ),
                 ),
@@ -180,4 +177,9 @@ class CreateProduct extends StatelessWidget {
       ),
     );
   }
+
+  Widget _label(String text) => Text(
+        text,
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      );
 }
