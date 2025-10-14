@@ -6,9 +6,7 @@ import 'package:jago_app/controller/AuthController.dart';
 import 'package:jago_app/controller/SidebarController.dart';
 
 class CreateMaterial extends StatelessWidget {
-  CreateMaterial({
-    super.key,
-  });
+  CreateMaterial({super.key});
 
   @override
   Widget build(BuildContext context) {

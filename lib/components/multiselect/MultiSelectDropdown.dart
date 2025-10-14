@@ -20,6 +20,19 @@ class MultiSelectDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<Map<String, dynamic>> matchedInitialValues = [];
+
+    if (title == 'Material') {
+      matchedInitialValues = options
+          .where((opt) =>
+              controller.selectedMaterials.any((sel) => sel['id'] == opt['id']))
+          .toList();
+    } else if (title == 'Catalog') {
+      matchedInitialValues = options
+          .where((opt) => controller.selectedCatalogs
+              .any((sel) => sel['catalog_id'] == opt['id']))
+          .toList();
+    }
     return Obx(() {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,6 +42,7 @@ class MultiSelectDropdown extends StatelessWidget {
                 .map((m) =>
                     MultiSelectItem<Map<String, dynamic>>(m, m[labelKey] ?? ''))
                 .toList(),
+            initialValue: matchedInitialValues,
             title: Text(
               title,
               style:

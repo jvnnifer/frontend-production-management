@@ -19,30 +19,32 @@ class CreateProduct extends StatelessWidget {
     final String? catalogItemId = args['id'];
 
     if (catalogItemId != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        controller.title.value = args['title'] ?? '';
-        controller.createdBy.value = args['createdBy'] ?? '';
-        controller.description.value = args['description'] ?? '';
-        controller.price.value = args['price']?.toString() ?? '';
-        controller.attachment.value = args['attachment'] ?? '';
+      controller.title.value = args['title'] ?? '';
+      controller.createdBy.value = args['createdBy'] ?? '';
+      controller.description.value = args['description'] ?? '';
+      controller.price.value = args['price']?.toString() ?? '';
+      controller.attachment.value = args['attachment'] ?? '';
 
-        final materialsArg = args['materials'] ?? [];
-        controller.selectedMaterials.assignAll(
-          List<Map<String, dynamic>>.from(materialsArg),
-        );
-      });
+      final materialsArg = args['materials'] ?? [];
+      controller.selectedMaterials.assignAll(
+        materialsArg.map<Map<String, dynamic>>((m) {
+          return {
+            "id": m["id"] ?? m["id"],
+            "name": m["name"] ?? m["materialName"] ?? '',
+            "reqQty": m["reqQty"] ?? m["qty"] ?? 0,
+          };
+        }).toList(),
+      );
     } else {
-      // reset field ketika mode create
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        controller.title.value = '';
-        controller.description.value = '';
-        controller.price.value = '';
-        controller.attachment.value = '';
-        controller.selectedMaterials.clear();
-      });
+      controller.title.value = '';
+      controller.description.value = '';
+      controller.price.value = '';
+      controller.attachment.value = '';
+      controller.selectedMaterials.clear();
     }
 
     final materials = controller.materials;
+    print(controller.selectedMaterials);
 
     return Scaffold(
       body: Stack(
@@ -51,7 +53,6 @@ class CreateProduct extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                /// 🟢 Header
                 Obx(() => Container(
                       height: 100,
                       padding: const EdgeInsets.only(left: 10, top: 30),
@@ -80,7 +81,6 @@ class CreateProduct extends StatelessWidget {
                         ],
                       ),
                     )),
-
                 Container(
                   padding: const EdgeInsets.all(20),
                   child: Column(
@@ -134,7 +134,6 @@ class CreateProduct extends StatelessWidget {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF80CBC4),
                               foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 14),
                             ),
                             onPressed: controller.isLoading.value
                                 ? null
@@ -154,7 +153,6 @@ class CreateProduct extends StatelessWidget {
                                     catalogItemId == null
                                         ? "Buat Catalog"
                                         : "Update Catalog",
-                                    style: const TextStyle(fontSize: 16),
                                   ),
                           ),
                         ),
