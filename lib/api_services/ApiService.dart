@@ -208,16 +208,49 @@ class ApiService {
 
   Future<Map<String, dynamic>> updateCatalogItem(
       String id, Map<String, dynamic> catalog) async {
-    final response = await http.post(
-      Uri.parse("$baseUrl/update-catalog/$id"),
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode(catalog),
-    );
+    var url = Uri.parse("$baseUrl/update-catalog/$id");
+
+    var request = http.MultipartRequest('PUT', url);
+
+    request.fields['title'] = catalog['title'] ?? '';
+    request.fields['createdBy'] = catalog['createdBy'] ?? '';
+    request.fields['description'] = catalog['description'] ?? '';
+    request.fields['price'] = catalog['price']?.toString() ?? '0';
+
+    final materials = (catalog['materials'] as List<Map<String, dynamic>>)
+        .map((m) => {
+              "materialId": m["id"],
+              "reqQty": m["reqQty"],
+            })
+        .toList();
+
+    request.fields['materials'] = jsonEncode(materials);
+
+    final fileData = catalog['file'];
+    if (fileData != null && fileData is String) {
+      if (fileData.startsWith('/9j/') || fileData.startsWith('iVBOR')) {
+        final bytes = base64Decode(fileData);
+        request.files.add(http.MultipartFile.fromBytes(
+          'file',
+          bytes,
+          filename: 'upload.png',
+        ));
+      } else if (fileData.endsWith('.jpg') ||
+          fileData.endsWith('.jpeg') ||
+          fileData.endsWith('.png')) {
+        request.files.add(await http.MultipartFile.fromPath('file', fileData));
+      }
+    }
+
+    final response = await request.send();
+    final responseBody = await response.stream.bytesToString();
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      print("✅ Catalog updated successfully: $responseBody");
+      return jsonDecode(responseBody);
     } else {
-      throw Exception("Failed to update material: ${response.body}");
+      print("Failed to update catalog: ${response.statusCode} - $responseBody");
+      throw Exception("Failed to update catalog");
     }
   }
 
@@ -239,6 +272,19 @@ class ApiService {
       return response.body;
     } else {
       throw Exception("Failed to delete catalog: ${response.body}");
+    }
+  }
+
+  // ===================== MATERIAL BY CATALOG ======================
+  Future<Map<String, dynamic>> getMaterialsForCatalog(String catalogId) async {
+    final url = Uri.parse("$baseUrl/get-materials-for-catalog/$catalogId");
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      return data;
+    } else {
+      throw Exception("Failed to load materials: ${response.body}");
     }
   }
 

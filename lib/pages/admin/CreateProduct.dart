@@ -19,6 +19,7 @@ class CreateProduct extends StatelessWidget {
     final String? catalogItemId = args['id'];
 
     if (catalogItemId != null) {
+      controller.loadMaterialsByCatalog(catalogItemId);
       controller.title.value = args['title'] ?? '';
       controller.createdBy.value = args['createdBy'] ?? '';
       controller.description.value = args['description'] ?? '';
@@ -113,8 +114,8 @@ class CreateProduct extends StatelessWidget {
                       const SizedBox(height: 5),
                       MultiSelectDropdown(
                         title: "Material",
-                        options: materials,
                         labelKey: "materialName",
+                        options: controller.materials,
                         onChanged: (selected) {
                           controller.selectedMaterials.assignAll(selected);
                         },

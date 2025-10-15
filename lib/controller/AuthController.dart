@@ -497,12 +497,12 @@ class AuthController extends GetxController {
         "description": description.value,
         "createdBy": createdBy.value,
         "price": price.value,
-        "attachment": attachment.value,
+        "file": attachment.value,
         "materials": selectedMaterials,
       };
 
       final response = await apiService.updateCatalogItem(id, updatedData);
-      print("Update berhasil: $response");
+      print("✅ Update berhasil: $response");
 
       await loadCatalog();
 
@@ -512,10 +512,10 @@ class AuthController extends GetxController {
         backgroundColor: Colors.green,
         colorText: Colors.white,
         snackPosition: SnackPosition.TOP,
-        duration: Duration(seconds: 1),
+        duration: const Duration(seconds: 1),
       );
 
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
       Get.off(() => RawMaterials());
     } catch (e) {
       print("Error updateCatalog: $e");
@@ -525,10 +525,31 @@ class AuthController extends GetxController {
         backgroundColor: Colors.red,
         colorText: Colors.white,
         snackPosition: SnackPosition.TOP,
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
       );
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> loadMaterialsByCatalog(String catalogId) async {
+    try {
+      final result = await apiService.getMaterialsForCatalog(catalogId);
+
+      final materials = (result["materials"] as List)
+          .map((m) => {
+                "id": m["materialId"],
+                "name": m["materialName"],
+                "reqQty": m["reqQty"],
+                "unit": m["unit"],
+              })
+          .toList();
+
+      selectedMaterials.assignAll(materials);
+
+      print("Materials loaded for catalog $catalogId: $materials");
+    } catch (e) {
+      print("Error loading materials for catalog: $e");
     }
   }
 
