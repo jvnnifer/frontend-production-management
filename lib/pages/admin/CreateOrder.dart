@@ -20,7 +20,31 @@ class CreateOrder extends StatelessWidget {
     final radioController = RadioController();
 
     final args = Get.arguments ?? {};
+    final String? orderNo = args['orderNo'];
     final String? status = args['status'];
+
+    if (orderNo != null) {
+      controller.orderNo.value = orderNo;
+      controller.deptStore.value = args['deptStore'] ?? '';
+      controller.notesOrder.value = args['notes'] ?? '';
+      controller.status.value = args['status'] ?? 'Pending';
+      if (args['deadline'] != null) {
+        final apiDate = DateTime.tryParse(args['deadline']);
+        controller.deadline.value = apiDate ?? DateTime.now();
+        controller.deadlineController.text =
+            apiDate != null ? DateFormat('dd-MM-yyyy').format(apiDate) : '';
+      } else {
+        controller.deadline.value = DateTime.now();
+        controller.deadlineController.text = '';
+      }
+      if (args['catalogs'] != null) {
+        controller.selectedCatalogs.assignAll(
+            (args['catalogs'] as List<dynamic>)
+                .map((e) => Map<String, dynamic>.from(e))
+                .toList());
+      }
+      controller.attachment.value = args['attachment'] ?? '';
+    }
 
     ever(radioController.selected, (val) {
       controller.status.value = val;
@@ -87,6 +111,7 @@ class CreateOrder extends StatelessWidget {
                         onChanged: (val) => controller.orderNo.value = val,
                         controller: TextEditingController(
                             text: controller.orderNo.value),
+                        readOnly: orderNo != null,
                       ),
                       SizedBox(height: 20),
                       Text(
@@ -166,12 +191,18 @@ class CreateOrder extends StatelessWidget {
                             onPressed: controller.isLoading.value
                                 ? null
                                 : () {
-                                    controller.createOrder();
+                                    if (orderNo != null) {
+                                      controller.updateOrder(orderNo);
+                                    } else {
+                                      controller.createOrder();
+                                    }
                                   },
                             child: controller.isLoading.value
                                 ? const CircularProgressIndicator(
                                     color: Colors.white)
-                                : Text("Buat Order"),
+                                : Text(orderNo != null
+                                    ? "Update Order"
+                                    : "Buat Order"),
                           ),
                         ),
                       ),

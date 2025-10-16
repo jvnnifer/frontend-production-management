@@ -381,7 +381,31 @@ class OrderDetail extends StatelessWidget {
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 14),
                                     ),
-                                    onPressed: () {},
+                                    onPressed: controller.orderDetail.isEmpty
+                                        ? null
+                                        : () {
+                                            final order =
+                                                controller.orderDetail;
+                                            Get.toNamed('/createorder',
+                                                arguments: {
+                                                  'orderNo':
+                                                      order['orderNo'] ?? '',
+                                                  'deptStore':
+                                                      order['deptStore'] ?? '',
+                                                  'notes': order['notes'] ?? '',
+                                                  'status': order['status'] ??
+                                                      'Pending',
+                                                  'deadline': order[
+                                                          'deadline'] ??
+                                                      DateTime.now()
+                                                          .toIso8601String(),
+                                                  'catalogs':
+                                                      order['catalogItems'] ??
+                                                          [],
+                                                  'attachment':
+                                                      order['attachment'] ?? '',
+                                                });
+                                          },
                                     child: const Text(
                                       "Edit",
                                       style: TextStyle(

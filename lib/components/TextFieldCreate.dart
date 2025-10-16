@@ -13,6 +13,7 @@ class TextFieldCreate extends StatefulWidget {
     this.initialValue,
     this.obscureText = false,
     this.onChanged,
+    this.readOnly = false,
   });
 
   final String name;
@@ -23,6 +24,7 @@ class TextFieldCreate extends StatefulWidget {
   final bool obscureText;
   final String? initialValue;
   final Function(dynamic)? onChanged;
+  final bool readOnly;
 
   @override
   State<TextFieldCreate> createState() => _TextFieldCreateState();
@@ -56,7 +58,7 @@ class _TextFieldCreateState extends State<TextFieldCreate> {
 
     final textField = TextFormField(
       controller: effectiveController,
-      readOnly: widget.isDate,
+      readOnly: widget.isDate || widget.readOnly,
       onTap: widget.isDate ? _pickDate : null,
       keyboardType: widget.isDate ? TextInputType.none : widget.keyboardType,
       obscureText: widget.obscureText,

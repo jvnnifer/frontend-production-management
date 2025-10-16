@@ -195,7 +195,6 @@ class ApiService {
         await http.MultipartFile.fromPath("file", attachmentPath),
       );
     }
-    // eksekusi request
     var response = await request.send();
 
     if (response.statusCode == 200) {
@@ -246,7 +245,7 @@ class ApiService {
     final responseBody = await response.stream.bytesToString();
 
     if (response.statusCode == 200) {
-      print("✅ Catalog updated successfully: $responseBody");
+      print("Catalog updated successfully: $responseBody");
       return jsonDecode(responseBody);
     } else {
       print("Failed to update catalog: ${response.statusCode} - $responseBody");
@@ -375,6 +374,54 @@ class ApiService {
       print("Order created");
     } else {
       print("Order failed to created");
+    }
+  }
+
+  Future<Map<String, dynamic>> updateOrder(
+      String orderNo, Map<String, dynamic> order) async {
+    var url = Uri.parse("$baseUrl/update-order/$orderNo");
+    print("$orderNo");
+    var request = http.MultipartRequest('PUT', url);
+
+    request.fields['deptStore'] = order['deptStore'] ?? '';
+    request.fields['deadline'] = order['deadline'] ?? '';
+    request.fields['status'] = order['status'] ?? '';
+    request.fields['notes'] = order['notes'] ?? '';
+
+    request.fields['orderCatalog'] = jsonEncode(
+      order['orderCatalog']
+          .map((c) => {
+                'catalog_id': c['catalog_id'],
+                'qty': c['qty'],
+              })
+          .toList(),
+    );
+
+    final fileData = order['file'];
+    if (fileData != null && fileData is String) {
+      if (fileData.startsWith('/9j/') || fileData.startsWith('iVBOR')) {
+        final bytes = base64Decode(fileData);
+        request.files.add(http.MultipartFile.fromBytes(
+          'file',
+          bytes,
+          filename: 'upload.png',
+        ));
+      } else if (fileData.endsWith('.jpg') ||
+          fileData.endsWith('.jpeg') ||
+          fileData.endsWith('.png')) {
+        request.files.add(await http.MultipartFile.fromPath('file', fileData));
+      }
+    }
+
+    var response = await request.send();
+    var responseBody = await response.stream.bytesToString();
+
+    if (response.statusCode == 200) {
+      print("Order updated successfully: $responseBody");
+      return jsonDecode(responseBody);
+    } else {
+      print("Failed: ${response.statusCode} - $responseBody");
+      throw Exception("Failed to update order");
     }
   }
 

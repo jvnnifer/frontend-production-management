@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:jago_app/api_services/ApiService.dart';
 import 'package:jago_app/controller/RadioController.dart';
 import 'package:jago_app/pages/HomePage.dart';
@@ -502,7 +503,7 @@ class AuthController extends GetxController {
       };
 
       final response = await apiService.updateCatalogItem(id, updatedData);
-      print("✅ Update berhasil: $response");
+      print("Update berhasil: $response");
 
       await loadCatalog();
 
@@ -516,7 +517,7 @@ class AuthController extends GetxController {
       );
 
       await Future.delayed(const Duration(seconds: 1));
-      Get.off(() => RawMaterials());
+      Get.off(() => CatalogShoes());
     } catch (e) {
       print("Error updateCatalog: $e");
       Get.snackbar(
@@ -706,6 +707,50 @@ class AuthController extends GetxController {
         colorText: Colors.white,
         snackPosition: SnackPosition.TOP,
         duration: Duration(seconds: 2),
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> updateOrder(String orderNo) async {
+    try {
+      isLoading.value = true;
+
+      print("Selected Catalogs: $selectedCatalogs");
+
+      final updatedData = {
+        "deptStore": deptStore.value,
+        "deadline": DateFormat('yyyy-MM-dd').format(deadline.value!),
+        "status": status.value,
+        "notes": notesOrder.value,
+        "orderCatalog": selectedCatalogs,
+        "file": attachment.value,
+      };
+
+      final response = await apiService.updateOrder(orderNo, updatedData);
+      await loadOrders();
+
+      Get.snackbar(
+        "Success",
+        "Order updated successfully",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
+        duration: const Duration(seconds: 1),
+      );
+
+      await Future.delayed(const Duration(seconds: 1));
+      Get.off(() => Order());
+    } catch (e) {
+      print("Error update order: $e");
+      Get.snackbar(
+        "Error",
+        "Failed to update order",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
+        duration: const Duration(seconds: 2),
       );
     } finally {
       isLoading.value = false;
