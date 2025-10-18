@@ -235,8 +235,8 @@ class OrderDetail extends StatelessWidget {
                                               fontSize: 17,
                                               fontWeight: FontWeight.w500),
                                         ),
-                                        if (order['catalogItems'] != null)
-                                          ...order['catalogItems']
+                                        if (order['catalogs'] != null)
+                                          ...order['catalogs']
                                               .map<Widget>((item) {
                                             return Padding(
                                               padding:
@@ -400,8 +400,7 @@ class OrderDetail extends StatelessWidget {
                                                       DateTime.now()
                                                           .toIso8601String(),
                                                   'catalogs':
-                                                      order['catalogItems'] ??
-                                                          [],
+                                                      order['catalogs'] ?? [],
                                                   'attachment':
                                                       order['attachment'] ?? '',
                                                 });

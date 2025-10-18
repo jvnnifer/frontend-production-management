@@ -39,10 +39,18 @@ class CreateOrder extends StatelessWidget {
       }
       if (args['catalogs'] != null) {
         controller.selectedCatalogs.assignAll(
-            (args['catalogs'] as List<dynamic>)
-                .map((e) => Map<String, dynamic>.from(e))
-                .toList());
+          (args['catalogs'] as List<dynamic>).map((e) {
+            return {
+              "catalogId": e["catalogId"],
+              "title": e["title"] ?? '',
+              "qty": e["qty"] ?? 0,
+            };
+          }).toList(),
+        );
+
+        print("Loaded catalogs from args: ${controller.selectedCatalogs}");
       }
+
       controller.attachment.value = args['attachment'] ?? '';
     }
 

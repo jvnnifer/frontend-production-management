@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class ApiService {
-  final String baseUrl = "http://192.168.100.6:8080/api";
+  final String baseUrl = "http://172.21.85.66:8080/api";
 
   Future<Map<String, dynamic>?> login(String username, String password) async {
     final response = await http.post(
@@ -389,10 +389,10 @@ class ApiService {
     request.fields['notes'] = order['notes'] ?? '';
 
     request.fields['orderCatalog'] = jsonEncode(
-      order['orderCatalog']
+      (order['orderCatalog'] as List)
           .map((c) => {
-                'catalog_id': c['catalog_id'],
-                'qty': c['qty'],
+                "catalogId": c["catalogId"],
+                "qty": c["qty"],
               })
           .toList(),
     );
@@ -452,6 +452,7 @@ class ApiService {
     final response = await http.get(Uri.parse(
         "$baseUrl/get-order-by-id?orderNo=${Uri.encodeQueryComponent(orderNo)}"));
 
+    print("🔍 Response get-order-by-id ($orderNo): ${response.body}");
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);
       return data;

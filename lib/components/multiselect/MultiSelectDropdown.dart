@@ -21,7 +21,6 @@ class MultiSelectDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      // 🟩 Tentukan nilai awal yang sudah dipilih
       List<Map<String, dynamic>> matchedInitialValues = [];
 
       if (title == 'Material') {
@@ -31,15 +30,14 @@ class MultiSelectDropdown extends StatelessWidget {
             .toList();
       } else if (title == 'Catalog') {
         matchedInitialValues = options
-            .where((opt) => controller.selectedCatalogs
-                .any((sel) => sel['catalog_id'] == opt['id']))
+            .where((opt) => controller.selectedCatalogs.any((sel) =>
+                sel['catalogId'] == opt['id'] || sel['id'] == opt['id']))
             .toList();
       }
 
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 🔹 MultiSelectDialogField tetap
           MultiSelectDialogField<Map<String, dynamic>>(
             items: options
                 .map((m) =>
@@ -91,11 +89,14 @@ class MultiSelectDropdown extends StatelessWidget {
               } else if (title == 'Catalog') {
                 final selected = results.map((cat) {
                   final existing = controller.selectedCatalogs.firstWhereOrNull(
-                      (sel) => sel['catalog_id'] == cat['id']);
+                    (sel) =>
+                        sel['catalogId'] == cat['id'] || sel['id'] == cat['id'],
+                  );
+
                   return {
-                    "catalog_id": cat["id"],
+                    "catalogId": cat["id"] ?? existing?['catalogId'],
                     "title": cat["title"],
-                    "qty": existing?['qty'] ?? 0,
+                    "qty": existing?['qty'] ?? cat['qty'] ?? 0,
                   };
                 }).toList();
 
@@ -104,9 +105,7 @@ class MultiSelectDropdown extends StatelessWidget {
               }
             },
           ),
-
           const SizedBox(height: 10),
-
           if (title == 'Material')
             ...controller.selectedMaterials.map((mat) {
               final qtyController = TextEditingController(
@@ -148,7 +147,6 @@ class MultiSelectDropdown extends StatelessWidget {
                 ),
               );
             }).toList(),
-
           if (title == 'Catalog')
             ...controller.selectedCatalogs.map((cat) {
               final qtyController = TextEditingController(
