@@ -21,9 +21,11 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   final SidebarController sidebar = Get.find<SidebarController>();
 
-  final chartKey = GlobalKey();
-  final hiddenChartKey = GlobalKey();
-  late HomeBarChartWrapper chartWrapper;
+  // Key untuk chart di layar
+  final GlobalKey liveChartKey = GlobalKey();
+
+  // Key untuk chart tersembunyi (untuk diambil gambar ke PDF)
+  final GlobalKey hiddenChartKey = GlobalKey();
 
   List<Map<String, dynamic>> orders = [];
   List<Map<String, dynamic>> prepOrders = [];
@@ -52,12 +54,13 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Future<void> generatePdf() async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 800));
 
     Uint8List? chartImage;
     try {
       RenderRepaintBoundary? boundary = hiddenChartKey.currentContext
           ?.findRenderObject() as RenderRepaintBoundary?;
+
       if (boundary != null) {
         var image = await boundary.toImage(pixelRatio: 3.0);
         ByteData? byteData =
@@ -72,10 +75,9 @@ class _DashboardPageState extends State<DashboardPage> {
 
     pdf.addPage(
       pw.MultiPage(
-        pageFormat: PdfPageFormat.a4,
         build: (context) => [
           pw.Text(
-            'Dashboard Produksi',
+            'Laporan Produksi ${DateTime.now().year}',
             style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold),
           ),
           pw.SizedBox(height: 20),
@@ -185,9 +187,17 @@ class _DashboardPageState extends State<DashboardPage> {
                             ],
                           ),
                         ),
-                        const SizedBox(height: 20),
-
-                        // Chart
+                        Center(
+                          child: Text(
+                            "Laporan Produksi ${DateTime.now().year}",
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        // Chart tampil di layar
                         Container(
                           margin: const EdgeInsets.all(10),
                           padding: const EdgeInsets.all(10),
@@ -213,11 +223,13 @@ class _DashboardPageState extends State<DashboardPage> {
                               const SizedBox(height: 20),
                               SizedBox(
                                 height: 220,
-                                child: HomeBarChartWrapper(globalKey: chartKey),
+                                child: HomeBarChartWrapper(
+                                    globalKey: liveChartKey),
                               ),
                             ],
                           ),
                         ),
+
                         const SizedBox(height: 30),
 
                         // Orders Table
@@ -273,6 +285,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                   ),
                                 ),
                               ),
+
                               const SizedBox(height: 30),
 
                               // Preparation Orders Table
@@ -332,6 +345,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         ),
 
                         const SizedBox(height: 50),
+
                         FloatingActionButton.extended(
                           onPressed: generatePdf,
                           icon: const Icon(Icons.picture_as_pdf,
@@ -349,7 +363,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   ),
                 ),
 
-          // Sidebar
+          // Sidebar dan chart tersembunyi untuk screenshot
           Stack(
             children: [
               Obx(
@@ -360,17 +374,16 @@ class _DashboardPageState extends State<DashboardPage> {
                   onSelected: sidebar.handleMenuTap,
                 ),
               ),
-              Visibility(
-                visible: false,
-                maintainState: true,
-                maintainAnimation: true,
-                maintainSize: true,
-                child: RepaintBoundary(
-                  key: hiddenChartKey,
-                  child: SizedBox(
-                    width: 12 * 60.0 + 40,
-                    height: 220,
-                    child: HomeBarChartWrapper(),
+              Positioned(
+                left: -9999,
+                top: -9999,
+                child: SizedBox(
+                  width: 1200,
+                  height: 594,
+                  child: HomeBarChartWrapper(
+                    globalKey: hiddenChartKey,
+                    scrollable: false,
+                    fontScale: 3,
                   ),
                 ),
               ),

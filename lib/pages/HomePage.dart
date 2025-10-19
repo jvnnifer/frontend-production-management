@@ -286,7 +286,22 @@ class HomePage extends StatelessWidget {
                                 ),
                               ),
                               onPressed: () {
-                                Get.toNamed('/dashboard');
+                                final role = controller.selectedRoleId;
+
+                                if (role == 'ROLE003') {
+                                  Get.toNamed('/dashboard');
+                                } else {
+                                  Get.snackbar(
+                                    'Akses Ditolak',
+                                    'Maaf, Anda tidak memiliki izin untuk mengakses halaman ini.',
+                                    snackPosition: SnackPosition.BOTTOM,
+                                    backgroundColor: Colors.red,
+                                    colorText: Colors.white,
+                                    margin: const EdgeInsets.all(16),
+                                    borderRadius: 12,
+                                    duration: const Duration(seconds: 3),
+                                  );
+                                }
                               },
                               child: Text('Lihat Selengkapnya'),
                             ),

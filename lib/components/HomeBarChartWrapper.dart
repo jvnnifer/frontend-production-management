@@ -1,16 +1,20 @@
-import 'dart:typed_data';
 import 'dart:ui';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:jago_app/controller/ChartController.dart';
 
 class HomeBarChartWrapper extends StatelessWidget {
   final ChartController controller = Get.put(ChartController());
   final GlobalKey? globalKey;
+  final bool scrollable;
+  final double fontScale;
 
-  HomeBarChartWrapper({this.globalKey});
+  HomeBarChartWrapper({
+    this.globalKey,
+    this.scrollable = true,
+    this.fontScale = 1.0,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -34,88 +38,123 @@ class HomeBarChartWrapper extends StatelessWidget {
             ) +
             2;
 
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: SizedBox(
-            width: 12 * 60.0 + 40,
-            height: 220,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 20),
-              child: BarChart(
-                BarChartData(
-                  alignment: BarChartAlignment.spaceAround,
-                  maxY: maxY,
-                  gridData: const FlGridData(show: false),
-                  borderData: FlBorderData(show: false),
-                  titlesData: FlTitlesData(
-                    leftTitles: const AxisTitles(
-                      sideTitles:
-                          SideTitles(showTitles: true, reservedSize: 32),
-                    ),
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        getTitlesWidget: (value, meta) {
-                          const months = [
-                            'Jan',
-                            'Feb',
-                            'Mar',
-                            'Apr',
-                            'May',
-                            'Jun',
-                            'Jul',
-                            'Aug',
-                            'Sep',
-                            'Oct',
-                            'Nov',
-                            'Dec'
-                          ];
-                          if (value.toInt() >= 1 && value.toInt() <= 12) {
-                            return Text(
-                              months[value.toInt() - 1],
-                              style: const TextStyle(fontSize: 10),
-                            );
-                          }
-                          return const SizedBox.shrink();
-                        },
+        final chart = SizedBox(
+          width: 12 * 55.0 + 60, // sedikit lebih kecil biar compact
+          height: 260 * fontScale, // tinggi proporsional
+          child: Padding(
+            padding: EdgeInsets.only(
+              right: 16 * fontScale,
+              left: 24 * fontScale,
+              bottom: 22 * fontScale,
+              top: 12 * fontScale,
+            ),
+            child: BarChart(
+              BarChartData(
+                alignment: BarChartAlignment.spaceAround,
+                maxY: maxY,
+                gridData: FlGridData(
+                  show: true,
+                  getDrawingHorizontalLine: (value) => FlLine(
+                    color: Colors.grey.withOpacity(0.3),
+                    strokeWidth: 1,
+                  ),
+                ),
+                borderData: FlBorderData(
+                  show: true,
+                  border: Border(
+                    left: BorderSide(color: Colors.grey.shade400, width: 1),
+                    bottom: BorderSide(color: Colors.grey.shade400, width: 1),
+                  ),
+                ),
+                titlesData: FlTitlesData(
+                  show: true,
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize:
+                          35 * fontScale, // lebih kecil tapi masih aman
+                      getTitlesWidget: (value, meta) => Padding(
+                        padding: EdgeInsets.only(right: 4 * fontScale),
+                        child: Text(
+                          value.toInt().toString(),
+                          style: TextStyle(
+                            fontSize: 12 * fontScale,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                  barGroups: List.generate(12, (index) {
-                    int month = index + 1;
-                    return BarChartGroupData(
-                      x: month,
-                      barRods: [
-                        BarChartRodData(
-                          toY: chartData[month]!,
-                          color: const Color(0xFF80CBC4),
-                          width: 30,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ],
-                    );
-                  }),
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 28 * fontScale, // cukup buat teks 3 huruf
+                      getTitlesWidget: (value, meta) {
+                        const months = [
+                          'Jan',
+                          'Feb',
+                          'Mar',
+                          'Apr',
+                          'May',
+                          'Jun',
+                          'Jul',
+                          'Aug',
+                          'Sep',
+                          'Oct',
+                          'Nov',
+                          'Dec'
+                        ];
+                        if (value.toInt() >= 1 && value.toInt() <= 12) {
+                          return Padding(
+                            padding: EdgeInsets.only(top: 2 * fontScale),
+                            child: Text(
+                              months[value.toInt() - 1],
+                              style: TextStyle(
+                                fontSize: 11 * fontScale,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
+                  ),
+                  topTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  rightTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
                 ),
+                barGroups: List.generate(12, (index) {
+                  int month = index + 1;
+                  return BarChartGroupData(
+                    x: month,
+                    barRods: [
+                      BarChartRodData(
+                        toY: chartData[month]!,
+                        color: const Color(0xFF80CBC4),
+                        width: 28 * fontScale,
+                        borderRadius: BorderRadius.circular(4 * fontScale),
+                      ),
+                    ],
+                  );
+                }),
               ),
             ),
           ),
         );
+
+        return scrollable
+            ? SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: chart,
+              )
+            : chart;
       }),
     );
-  }
-
-  Future<Uint8List?> captureChart() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    try {
-      final boundary = globalKey?.currentContext?.findRenderObject()
-          as RenderRepaintBoundary?;
-      if (boundary == null) return null;
-      final image = await boundary.toImage(pixelRatio: 3.0);
-      final byteData = await image.toByteData(format: ImageByteFormat.png);
-      return byteData?.buffer.asUint8List();
-    } catch (e) {
-      print("Error capturing chart: $e");
-      return null;
-    }
   }
 }
