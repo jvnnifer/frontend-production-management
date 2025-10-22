@@ -14,10 +14,12 @@ class OrderDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     final SidebarController sidebar = Get.find();
 
-    final args = Get.arguments;
-    final String orderNo = args['orderNo'];
+    final args = Get.arguments ?? {};
+    final String? orderNo = args['orderNo'];
     final controller = Get.find<AuthController>();
-    controller.fetchOrderDetail(orderNo);
+    if (orderNo != null) {
+      controller.fetchOrderDetail(orderNo);
+    }
 
     String _formatDate(String? dateStr) {
       if (dateStr == null || dateStr.isEmpty) return '-';
@@ -32,6 +34,10 @@ class OrderDetail extends StatelessWidget {
     Color _getStatusColor(String? status) {
       if (status?.toLowerCase() == 'pending') {
         return Colors.orange;
+      } else if (status?.toLowerCase() == 'on progress') {
+        return Colors.green;
+      } else if (status?.toLowerCase() == 'confirmed') {
+        return Colors.blue;
       } else {
         return Colors.red;
       }

@@ -187,8 +187,9 @@ class PreparationOrder extends StatelessWidget {
                                         const SizedBox(height: 30),
                                         if (controller.selectedRoleId ==
                                                 "ROLE001" &&
-                                            order["status"] ==
-                                                "Waiting Material")
+                                            (order["status"] ==
+                                                    "Waiting Material" ||
+                                                order["status"] == "Scheduled"))
                                           SizedBox(
                                             width: double.infinity,
                                             child: ElevatedButton(

@@ -124,7 +124,13 @@ class Order extends StatelessWidget {
                                       decoration: BoxDecoration(
                                         color: status == 'Pending'
                                             ? Colors.orange.withOpacity(0.1)
-                                            : Colors.red.withOpacity(0.1),
+                                            : status == 'On Progress'
+                                                ? Colors.green.withOpacity(0.1)
+                                                : status == 'Confirmed'
+                                                    ? Colors.blue
+                                                        .withOpacity(0.1)
+                                                    : Colors.red
+                                                        .withOpacity(0.1),
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Text(
@@ -132,7 +138,11 @@ class Order extends StatelessWidget {
                                         style: TextStyle(
                                           color: status == 'Pending'
                                               ? Colors.orange
-                                              : Colors.red,
+                                              : status == 'On Progress'
+                                                  ? Colors.green
+                                                  : status == 'Confirmed'
+                                                      ? Colors.blue
+                                                      : Colors.red,
                                           fontSize: 14,
                                           fontWeight: FontWeight.w600,
                                         ),
