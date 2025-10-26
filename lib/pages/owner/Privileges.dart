@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jago_app/api_services/ApiService.dart';
-import 'package:jago_app/components/CollapsibleSidebar.dart';
-import 'package:jago_app/controller/AuthController.dart';
-import 'package:jago_app/controller/SidebarController.dart';
+import 'package:Prodify/api_services/ApiService.dart';
+import 'package:Prodify/components/CollapsibleSidebar.dart';
+import 'package:Prodify/controller/AuthController.dart';
+import 'package:Prodify/controller/SidebarController.dart';
 
 class Privileges extends StatefulWidget {
   const Privileges({super.key});

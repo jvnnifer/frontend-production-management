@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../../components/CollapsibleSidebar.dart';
 import '../../controller/SidebarController.dart';
-import 'package:jago_app/controller/AuthController.dart';
+import 'package:Prodify/controller/AuthController.dart';
 
 class CatalogShoes extends StatelessWidget {
   const CatalogShoes({super.key});

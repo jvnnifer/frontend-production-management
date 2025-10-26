@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jago_app/controller/AuthController.dart';
+import 'package:Prodify/controller/AuthController.dart';
 import '../../controller/RadioController.dart';
 
 class RadioButton extends StatelessWidget {

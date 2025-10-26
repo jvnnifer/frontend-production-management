@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:jago_app/api_services/ApiService.dart';
+import 'package:Prodify/api_services/ApiService.dart';
 
 class ChartController extends GetxController {
   var monthlyData = <int, int>{}.obs;

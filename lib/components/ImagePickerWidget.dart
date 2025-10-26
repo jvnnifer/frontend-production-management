@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:jago_app/controller/AuthController.dart';
+import 'package:Prodify/controller/AuthController.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ImagePickerWidget extends StatefulWidget {

@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jago_app/components/HomeMenuItem.dart';
-import 'package:jago_app/controller/AuthController.dart';
-import 'package:jago_app/controller/SidebarController.dart';
+import 'package:Prodify/components/HomeMenuItem.dart';
+import 'package:Prodify/controller/AuthController.dart';
+import 'package:Prodify/controller/SidebarController.dart';
 import 'SideMenuTile.dart';
 
 class SideMenuBar extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jago_app/components/HomeMenuItem.dart';
+import 'package:Prodify/components/HomeMenuItem.dart';
 
 class SideMenuTile extends StatelessWidget {
   final HomeMenuItem menu;

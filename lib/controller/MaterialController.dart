@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:jago_app/entity/RawMaterial.dart';
+import 'package:Prodify/entity/RawMaterial.dart';
 
 class MaterialController extends GetxController {
   var selectedMaterial = <RawMaterial>[].obs;

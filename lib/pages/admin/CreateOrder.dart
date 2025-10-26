@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:jago_app/components/ImagePickerWidget.dart';
-import 'package:jago_app/components/multiselect/MultiSelectDropdown.dart';
-import 'package:jago_app/components/radiobutton/radio_button.dart';
-import 'package:jago_app/controller/AuthController.dart';
-import 'package:jago_app/controller/RadioController.dart';
+import 'package:Prodify/components/ImagePickerWidget.dart';
+import 'package:Prodify/components/multiselect/MultiSelectDropdown.dart';
+import 'package:Prodify/components/radiobutton/radio_button.dart';
+import 'package:Prodify/controller/AuthController.dart';
+import 'package:Prodify/controller/RadioController.dart';
 import '../../components/CollapsibleSidebar.dart';
 import '../../components/TextFieldCreate.dart';
 import '../../controller/SidebarController.dart';

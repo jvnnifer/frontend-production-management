@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jago_app/controller/ChartController.dart';
+import 'package:Prodify/controller/ChartController.dart';
 
 class HomeBarChartWrapper extends StatelessWidget {
   final ChartController controller = Get.put(ChartController());

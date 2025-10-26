@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:jago_app/components/CollapsibleSidebar.dart';
-import 'package:jago_app/components/TextFieldCreate.dart';
-import 'package:jago_app/controller/AuthController.dart';
-import 'package:jago_app/controller/SidebarController.dart';
+import 'package:Prodify/components/CollapsibleSidebar.dart';
+import 'package:Prodify/components/TextFieldCreate.dart';
+import 'package:Prodify/controller/AuthController.dart';
+import 'package:Prodify/controller/SidebarController.dart';
 
 class CreateMaterial extends StatelessWidget {
   CreateMaterial({super.key});

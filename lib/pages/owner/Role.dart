@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jago_app/components/CollapsibleSidebar.dart';
-import 'package:jago_app/controller/AuthController.dart';
-import 'package:jago_app/controller/SidebarController.dart';
+import 'package:Prodify/components/CollapsibleSidebar.dart';
+import 'package:Prodify/controller/AuthController.dart';
+import 'package:Prodify/controller/SidebarController.dart';
 
 class Role extends StatelessWidget {
   const Role({super.key});

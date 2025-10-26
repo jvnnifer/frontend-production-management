@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:jago_app/components/HomeMenuItem.dart';
+import 'package:Prodify/components/HomeMenuItem.dart';
 
 class SidebarController extends GetxController {
   var isCollapsed = true.obs;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jago_app/controller/AuthController.dart';
+import 'package:Prodify/controller/AuthController.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:get/get.dart';
 

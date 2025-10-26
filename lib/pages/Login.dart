@@ -1,8 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jago_app/components/TextFieldCreate.dart';
-import 'package:jago_app/controller/AuthController.dart';
+import 'package:Prodify/components/TextFieldCreate.dart';
+import 'package:Prodify/controller/AuthController.dart';
 
 class Login extends StatelessWidget {
   Login({super.key});

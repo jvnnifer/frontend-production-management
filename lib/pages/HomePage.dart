@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:jago_app/components/HomeBarChart.dart';
-import 'package:jago_app/components/ToggleSwitchTime.dart';
-import 'package:jago_app/controller/AuthController.dart';
+import 'package:Prodify/components/HomeBarChart.dart';
+import 'package:Prodify/components/ToggleSwitchTime.dart';
+import 'package:Prodify/controller/AuthController.dart';
 import '../components/CollapsibleSidebar.dart';
 import '../controller/SidebarController.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:jago_app/components/HomeMenuItem.dart';
+import 'package:Prodify/components/HomeMenuItem.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomePage extends StatelessWidget {

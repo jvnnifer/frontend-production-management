@@ -1,12 +1,12 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:jago_app/components/CollapsibleSidebar.dart';
-import 'package:jago_app/components/TextFieldCreate.dart';
-import 'package:jago_app/components/dropdown/SearchableDropdownWidget.dart';
-import 'package:jago_app/components/radiobutton/radio_button.dart';
-import 'package:jago_app/controller/AuthController.dart';
-import 'package:jago_app/controller/RadioController.dart';
-import 'package:jago_app/controller/SidebarController.dart';
+import 'package:Prodify/components/CollapsibleSidebar.dart';
+import 'package:Prodify/components/TextFieldCreate.dart';
+import 'package:Prodify/components/dropdown/SearchableDropdownWidget.dart';
+import 'package:Prodify/components/radiobutton/radio_button.dart';
+import 'package:Prodify/controller/AuthController.dart';
+import 'package:Prodify/controller/RadioController.dart';
+import 'package:Prodify/controller/SidebarController.dart';
 
 class CreateMaterialLog extends StatelessWidget {
   CreateMaterialLog({super.key});
