@@ -119,16 +119,12 @@ class CreateOrder extends StatelessWidget {
                             name: "Nama Dept. Store",
                             onChanged: (val) =>
                                 controller.deptStore.value = val,
-                            controller: TextEditingController(
-                                text: controller.deptStore.value),
                           ),
                           const SizedBox(height: 20),
                           _label("Nomor Order"),
                           TextFieldCreate(
                             name: "Nomor Order",
                             onChanged: (val) => controller.orderNo.value = val,
-                            controller: TextEditingController(
-                                text: controller.orderNo.value),
                             readOnly: orderNo != null,
                           ),
                           const SizedBox(height: 20),
@@ -149,8 +145,6 @@ class CreateOrder extends StatelessWidget {
                             name: "Notes",
                             onChanged: (val) =>
                                 controller.notesOrder.value = val,
-                            controller: TextEditingController(
-                                text: controller.notesOrder.value),
                           ),
                           const SizedBox(height: 20),
                           _label("Catalog"),

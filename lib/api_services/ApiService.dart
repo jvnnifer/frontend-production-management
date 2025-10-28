@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class ApiService {
-  final String baseUrl = "https://zora-superfine-ceola.ngrok-free.dev/api";
+  final String baseUrl = "http://172.21.85.66:8080/api";
 
   Future<Map<String, dynamic>?> login(String username, String password) async {
     final response = await http.post(
@@ -356,7 +356,7 @@ class ApiService {
     request.fields['orderCatalog'] = jsonEncode(
       orderCatalog
           .map((m) => {
-                "catalog_id": m["catalog_id"],
+                "catalogId": m["catalogId"],
                 "qty": m["qty"],
               })
           .toList(),
