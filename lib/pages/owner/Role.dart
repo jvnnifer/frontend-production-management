@@ -11,9 +11,11 @@ class Role extends StatelessWidget {
   Widget build(BuildContext context) {
     final AuthController controller = Get.find<AuthController>();
     final SidebarController sidebar = Get.find();
+    final RxBool isAddingRole = false.obs;
+    final TextEditingController roleNameController = TextEditingController();
 
-    if (controller.roles.isEmpty) {
-      controller.loadRoles();
+    if (controller.rolesAll.isEmpty) {
+      controller.loadRolesAll();
     }
 
     return Scaffold(
@@ -39,7 +41,7 @@ class Role extends StatelessWidget {
                       const Padding(
                         padding: EdgeInsets.all(20),
                         child: Text(
-                          'Daftar Role',
+                          'Produksi Internal',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 20,
@@ -52,19 +54,87 @@ class Role extends StatelessWidget {
                 ),
 
                 const SizedBox(height: 10),
+                Container(
+                  padding: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                  child: Column(
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          isAddingRole.value = true;
+                        },
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            "+ Tambah Item",
+                            style: TextStyle(
+                              color: Color(0xFF80CBC4),
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
 
                 // ===== List Roles =====
                 Obx(() {
-                  if (controller.roles.isEmpty) {
+                  if (controller.rolesAll.isEmpty) {
                     return const Center(child: CircularProgressIndicator());
                   }
 
-                  return Column(
-                    children: controller.roles.map((role) {
+                  return Column(children: [
+                    if (isAddingRole.value)
+                      Card(
+                        color: Colors.grey[100],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.add, color: Colors.teal),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: TextField(
+                                  controller: roleNameController,
+                                  decoration: const InputDecoration(
+                                    hintText: 'Masukkan nama role',
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.close,
+                                    color: Colors.redAccent),
+                                onPressed: () {
+                                  isAddingRole.value = false;
+                                  roleNameController.clear();
+                                },
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.check,
+                                    color: Colors.green),
+                                onPressed: () {
+                                  if (roleNameController.text.isNotEmpty) {
+                                    controller.roleName.value =
+                                        roleNameController.text;
+                                    controller.createRole();
+                                    roleNameController.clear();
+                                    isAddingRole.value = false;
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ...controller.rolesAll.map((role) {
                       final roleName =
                           role['roleName'] ?? role['name'] ?? 'Tidak diketahui';
-                      final roleId = role['id'] ?? '';
-
                       return Card(
                         elevation: 2,
                         shape: RoundedRectangleBorder(
@@ -77,14 +147,11 @@ class Role extends StatelessWidget {
                             style: const TextStyle(
                                 fontWeight: FontWeight.w600, fontSize: 16),
                           ),
-                          subtitle: Text("ID: $roleId"),
-                          onTap: () {
-                            // bisa navigasi ke detail role
-                          },
+                          onTap: () {},
                         ),
                       );
                     }).toList(),
-                  );
+                  ]);
                 }),
               ],
             ),

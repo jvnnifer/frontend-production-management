@@ -29,7 +29,6 @@ class _PrivilegesState extends State<Privileges> {
     try {
       await controller.loadAllPrivileges();
 
-      // Ambil unique privileges berdasarkan privilege_id
       final seenIds = <String>{};
       final uniqueAllPrivileges = <Map<String, dynamic>>[];
 
@@ -40,11 +39,11 @@ class _PrivilegesState extends State<Privileges> {
           uniqueAllPrivileges.add(p);
         }
       }
+      controller.allPrivileges.clear();
       controller.allPrivileges.assignAll(uniqueAllPrivileges);
 
-      // Ambil role pertama
-      if (controller.roles.isNotEmpty) {
-        selectedRoleId = controller.roles.first['id'].toString();
+      if (controller.rolesAll.isNotEmpty) {
+        selectedRoleId = controller.rolesAll.first['id'].toString();
 
         await controller.loadPrivilegesByRole(selectedRoleId);
 
@@ -138,7 +137,7 @@ class _PrivilegesState extends State<Privileges> {
                             height: 2,
                             color: const Color(0xFF80CBC4),
                           ),
-                          items: controller.roles.map((role) {
+                          items: controller.rolesAll.map((role) {
                             return DropdownMenuItem<String>(
                               value: role['id'].toString(),
                               child:

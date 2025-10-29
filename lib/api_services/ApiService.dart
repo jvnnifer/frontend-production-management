@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class ApiService {
-  final String baseUrl = "http://172.21.85.66:8080/api";
+  final String baseUrl = "https://zora-superfine-ceola.ngrok-free.dev/api";
 
   Future<Map<String, dynamic>?> login(String username, String password) async {
     final response = await http.post(
@@ -83,6 +83,17 @@ class ApiService {
 
   Future<List<Map<String, dynamic>>> fetchRoles() async {
     final response = await http.get(Uri.parse("$baseUrl/roles"));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.cast<Map<String, dynamic>>();
+    } else {
+      throw Exception('Failed to load roles: ${response.statusCode}');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchRolesAll() async {
+    final response = await http.get(Uri.parse("$baseUrl/roles-all"));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
@@ -514,6 +525,23 @@ class ApiService {
   }
 
   // ============== MANAGE ROLE ========================
+  Future<Map<String, dynamic>> insertRole(String roleName, int isOwner) async {
+    final response = await http.post(
+      Uri.parse("$baseUrl/role"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        'roleName': roleName,
+        'isOwner': isOwner,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception("Failed to insert role: ${response.body}");
+    }
+  }
+
   Future<List<Map<String, dynamic>>> getPrivilegesByRole(String roleId) async {
     final response = await http.get(
       Uri.parse("$baseUrl/$roleId/privileges"),

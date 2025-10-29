@@ -1,3 +1,4 @@
+import 'package:Prodify/pages/owner/Role.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -24,6 +25,9 @@ class AuthController extends GetxController {
 
   var roles = <Map<String, dynamic>>[].obs;
   var selectedRoleId = ''.obs;
+
+  // roles all include owner for privilege mapping
+  var rolesAll = <Map<String, dynamic>>[].obs;
 
   // users
   var usersAdmin = <Map<String, dynamic>>[].obs;
@@ -77,6 +81,10 @@ class AuthController extends GetxController {
   var userPrivileges = <String>[].obs;
   RxList<String> rolePrivileges = <String>[].obs;
 
+  // role
+  var roleName = ''.obs;
+  var isOwner = 0.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -88,6 +96,7 @@ class AuthController extends GetxController {
     getAllMaterialLogs();
     loadUsersByRole('ROLE001');
     loadUsersByRole('ROLE002');
+    loadRolesAll();
   }
 
   void resetMaterials() {
@@ -123,10 +132,19 @@ class AuthController extends GetxController {
     }
   }
 
+  Future<void> loadRolesAll() async {
+    try {
+      final result = await apiService.fetchRolesAll();
+      rolesAll.assignAll(result);
+    } catch (e) {
+      print("Error loadRolesAll: $e");
+    }
+  }
+
   Future<void> loadUsersByRole(String id) async {
     try {
       final result = await apiService.getUserByRole(id);
-      print("✅ Received ${result.length} users for $id");
+      print("Received ${result.length} users for $id");
       if (id == 'ROLE001') {
         usersAdmin.assignAll(result);
       } else {
@@ -222,6 +240,8 @@ class AuthController extends GetxController {
         if (roles.isEmpty) {
           roles.assignAll(await apiService.fetchRoles());
         }
+
+        rolesAll.assignAll(await apiService.fetchRolesAll());
 
         var roleName = selectedRoleName;
 
@@ -842,6 +862,50 @@ class AuthController extends GetxController {
   }
 
   // =================== PRIVILEGES ==================
+  Future<void> createRole() async {
+    isLoading.value = true;
+    try {
+      final result = await apiService.insertRole(
+        roleName.value,
+        0,
+      );
+
+      print("Role created: $result");
+
+      Get.snackbar(
+        "Success",
+        "Success create role",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
+        duration: Duration(seconds: 1),
+      );
+
+      roleName.value = "";
+      isOwner.value = 0;
+
+      await Future.wait([
+        loadRolesAll(),
+        loadRoles(),
+      ]);
+
+      await Future.delayed(Duration(seconds: 1));
+      Get.off(() => Role());
+    } catch (e) {
+      print("Error create role: $e");
+      Get.snackbar(
+        "Error",
+        "Error void to create role",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
+        duration: Duration(seconds: 2),
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   Future<void> loadPrivilegesByRole(String roleId) async {
     try {
       final result = await apiService.getPrivilegesByRole(roleId);
