@@ -190,31 +190,46 @@ class PreparationOrder extends StatelessWidget {
                                             (order["status"] ==
                                                     "Waiting Material" ||
                                                 order["status"] == "Scheduled"))
-                                          SizedBox(
-                                            width: double.infinity,
-                                            child: ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    const Color(0xFF80CBC4),
-                                                foregroundColor: Colors.white,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
+                                          Obx(
+                                            () => SizedBox(
+                                              width: double.infinity,
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      const Color(0xFF80CBC4),
+                                                  foregroundColor: Colors.white,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                  ),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 12),
                                                 ),
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 12),
-                                              ),
-                                              onPressed: () async {
-                                                controller
-                                                    .approvePreparationOrder(
-                                                        order["id"]);
-                                              },
-                                              child: const Text(
-                                                "Approve",
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.w600),
+                                                onPressed: controller
+                                                        .isApproving.value
+                                                    ? null // disable
+                                                    : () => controller
+                                                        .approvePreparationOrder(
+                                                            order["id"]),
+                                                child: controller
+                                                        .isApproving.value
+                                                    ? const SizedBox(
+                                                        width: 20,
+                                                        height: 20,
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                          color: Colors.white,
+                                                          strokeWidth: 2,
+                                                        ),
+                                                      )
+                                                    : const Text(
+                                                        "Approve",
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w600),
+                                                      ),
                                               ),
                                             ),
                                           )

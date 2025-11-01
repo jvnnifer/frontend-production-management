@@ -18,6 +18,8 @@ class AuthController extends GetxController {
   final radioController = Get.put(RadioController());
   final TextEditingController deadlineController = TextEditingController();
 
+  var isApproving = false.obs;
+
   var isLoading = false.obs;
   var userId = ''.obs;
   var username = ''.obs;
@@ -825,39 +827,30 @@ class AuthController extends GetxController {
   }
 
   void approvePreparationOrder(String orderId) async {
-    try {
-      final updated = await apiService.updatePreparationOrderStatus(
-        orderId,
-        "Ready to Process",
-      );
+    if (isApproving.value) return;
+    isApproving.value = true;
 
-      if (updated != null) {
+    try {
+      final response = await apiService.updatePreparationOrderStatus(
+          orderId, "Ready to Process");
+
+      if (response?['success'] == true) {
         final index = prepOrders.indexWhere((order) => order["id"] == orderId);
         if (index != -1) {
-          prepOrders[index] = updated;
+          prepOrders[index] = response?['preparationOrder'];
           prepOrders.refresh();
         }
 
-        Get.snackbar(
-          "Success",
-          "Preparation Order approved.",
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.TOP,
-          duration: Duration(seconds: 1),
-        );
+        Get.snackbar("Success", response?['message'],
+            backgroundColor: Colors.green, colorText: Colors.white);
       } else {
-        Get.snackbar(
-          "Error",
-          "Preparation Order approval failed. Please contact the admin.",
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-          snackPosition: SnackPosition.TOP,
-          duration: Duration(seconds: 1),
-        );
+        Get.snackbar("Error", response?['message'],
+            backgroundColor: Colors.red, colorText: Colors.white);
       }
     } catch (e) {
       Get.snackbar("Error", e.toString());
+    } finally {
+      isApproving.value = false;
     }
   }
 

@@ -506,9 +506,7 @@ class ApiService {
 
     final response = await http.put(
       url,
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: {'Content-Type': 'application/json; charset=UTF-8'},
       body: jsonEncode({'status': status}),
     );
 
@@ -517,10 +515,11 @@ class ApiService {
     print('Response: ${response.statusCode}');
     print('Response Body: ${response.body}');
 
-    if (response.statusCode == 200) {
+    try {
       return jsonDecode(response.body);
-    } else {
-      return null;
+    } catch (e) {
+      print("Failed to decode response: $e");
+      return {'success': false, 'message': 'Invalid response from server'};
     }
   }
 
